@@ -8,6 +8,7 @@ export interface ScanResult {
   itemName: string;
   isFood: boolean;
   calories: string;
+  glycemicImpact: 'Baixo' | 'Médio' | 'Alto' | 'N/A';
   carbs: string;
   sodium: string;
   vitamins: string;
@@ -15,4 +16,4 @@ export interface ScanResult {
   safetyAlert: string;
 }
 
-export type AppView = 'home' | 'profile' | 'scanning' | 'results';
+export type AppView = 'dashboard' | 'mealplan' | 'history' | 'profile' | 'scanning' | 'results';

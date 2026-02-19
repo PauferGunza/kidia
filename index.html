@@ -11,22 +11,22 @@
           extend: {
             colors: {
               kidia: {
-                forest: {
-                  DEFAULT: '#0B4F29',
-                  light: '#147640',
-                  dark: '#053118'
-                },
-                terra: {
-                  DEFAULT: '#E05936',
-                  light: '#E87D61',
-                  dark: '#B04124'
-                },
-                sand: '#FDFBF7',
-                gold: '#D4AF37'
+                bg: '#FCFBF6',
+                green: '#1A3C28',
+                greenLight: '#2A553B',
+                orange: '#C26E28',
+                orangeLight: '#F5EBE1',
+                orangeCard: '#B66B24',
+                greyText: '#868984',
+                greyLight: '#F3F4F1'
               }
             },
-            animation: {
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            fontFamily: {
+              sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            },
+            boxShadow: {
+              'soft': '0 4px 20px -2px rgba(0,0,0,0.05)',
+              'up': '0 -10px 40px rgba(0,0,0,0.08)',
             }
           }
         }
@@ -34,14 +34,18 @@
     </script>
     <style>
       body {
-        background-color: #FDFBF7;
+        background-color: #FCFBF6;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         -webkit-tap-highlight-color: transparent;
       }
-      /* Hide scrollbar for a more app-like feel */
       ::-webkit-scrollbar {
         width: 0px;
         background: transparent;
+      }
+      /* Custom utility for the dot pattern background */
+      .bg-dot-pattern {
+        background-image: radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+        background-size: 16px 16px;
       }
     </style>
   <script type="importmap">

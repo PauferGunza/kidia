@@ -17,36 +17,34 @@ TUA MISSÃO: Analisar fotos de alimentos angolanos (Funge, Calulu, Muzongué, et
 
 REGRAS DE ANÁLISE (MODO SAÚDE):
 1. Identificação: Identifica exatamente o que está na foto.
-2. Valores Nutricionais: Se for comida, dá a estimativa de calorias, carboidratos (importante para diabéticos) e sódio (para hipertensos). Se for planta, preencha com N/A.
-3. Visão Dr. Viva: Explica os benefícios curativos segundo a medicina integrativa do Dr. Viva.
+2. Valores Nutricionais: Estima calorias, carboidratos e sódio. Classifica o "Impacto Glicémico" como "Baixo", "Médio", "Alto" (ou "N/A" para plantas não consumíveis).
+3. Visão Dr. Viva: Explica os benefícios curativos segundo a medicina integrativa do Dr. Viva de forma acolhedora.
 
 ALERTAS DE SEGURANÇA (OBRIGATÓRIO):
-- Se o prato for alto em índice glicémico e o usuário for diabético, avisa o usuário Diabético.
-- Se a planta medicinal ou alimento tiver interação negativa com remédios de tensão ou alta em sódio e o usuário for hipertenso, dá o aviso em DESTAQUE.
-- Se não houver risco baseado no perfil, retorne uma string vazia ("").
-
-Linguagem: Usa um tom profissional, acolhedor e claro, como o Dr. Viva faz nos seus podcasts. Se o usuário for de uma zona rural, simplifica os termos técnicos.
+- Baseado no Perfil do Utilizador abaixo, alerta em DESTAQUE se houver interações perigosas (ex: açúcar para diabéticos, sódio alto para hipertensos).
+- Se for seguro, retorne string vazia "".
 
 PERFIL DO USUÁRIO ATUAL:
 - Diabético: ${profile.diabetes ? 'SIM' : 'NÃO'}
 - Hipertenso: ${profile.hypertension ? 'SIM' : 'NÃO'}
 - Busca Perda de Peso: ${profile.weightLoss ? 'SIM' : 'NÃO'}
 
-Retorne APENAS um objeto JSON válido seguindo a estrutura solicitada.`;
+Retorne APENAS um objeto JSON válido.`;
 
   const responseSchema = {
     type: Type.OBJECT,
     properties: {
       itemName: { type: Type.STRING, description: "Nome do item identificado" },
       isFood: { type: Type.BOOLEAN, description: "Verdadeiro se for comida/prato, falso se for planta medicinal ou outro" },
-      calories: { type: Type.STRING, description: "Ex: '250 kcal' ou 'N/A' para plantas" },
-      carbs: { type: Type.STRING, description: "Ex: '45g' ou 'N/A' para plantas" },
-      sodium: { type: Type.STRING, description: "Ex: '150mg' ou 'N/A' para plantas" },
+      calories: { type: Type.STRING, description: "Ex: '350 kcal' ou 'N/A'" },
+      glycemicImpact: { type: Type.STRING, description: "DEVE SER EXATAMENTE UM DESTES: 'Baixo', 'Médio', 'Alto', ou 'N/A'" },
+      carbs: { type: Type.STRING, description: "Ex: '45g' ou 'N/A'" },
+      sodium: { type: Type.STRING, description: "Ex: '150mg' ou 'N/A'" },
       vitamins: { type: Type.STRING, description: "Principais vitaminas/minerais presentes" },
-      drVivaAdvice: { type: Type.STRING, description: "O conselho integrativo e cultural do Dr. Viva" },
-      safetyAlert: { type: Type.STRING, description: "ALERTA DE SEGURANÇA se aplicável ao perfil do usuário. Se seguro, string vazia." }
+      drVivaAdvice: { type: Type.STRING, description: "Conselho integrativo e cultural do Dr. Viva" },
+      safetyAlert: { type: Type.STRING, description: "Aviso de segurança personalizado. Vazio se não houver perigo." }
     },
-    required: ["itemName", "isFood", "calories", "carbs", "sodium", "vitamins", "drVivaAdvice", "safetyAlert"]
+    required: ["itemName", "isFood", "calories", "glycemicImpact", "carbs", "sodium", "vitamins", "drVivaAdvice", "safetyAlert"]
   };
 
   try {
@@ -60,14 +58,14 @@ Retorne APENAS um objeto JSON válido seguindo a estrutura solicitada.`;
           },
         },
         {
-          text: "Por favor, analise esta imagem com base nas diretrizes do Dr. Viva e retorne os dados no formato JSON.",
+          text: "Análise nutricional e botânica Dr. Viva. Retorne em JSON.",
         },
       ],
       config: {
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema,
-        temperature: 0.3, // Lower temperature for more consistent, factual nutritional extraction
+        temperature: 0.2,
       },
     });
 
@@ -80,6 +78,6 @@ Retorne APENAS um objeto JSON válido seguindo a estrutura solicitada.`;
     return result;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("Não foi possível analisar a imagem no momento. Tente novamente.");
+    throw new Error("Não foi possível analisar a imagem. Tente novamente.");
   }
 };
