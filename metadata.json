@@ -1,0 +1,7 @@
+{
+  "name": "KIDIA",
+  "description": "A premium health and wellness mobile app powered by Dr. Viva's integrative medicine.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
