@@ -1,4 +1,6 @@
 export interface UserProfile {
+  name?: string;
+  email?: string;
   diabetes: boolean;
   hypertension: boolean;
   weightLoss: boolean;
@@ -16,4 +18,4 @@ export interface ScanResult {
   safetyAlert: string;
 }
 
-export type AppView = 'dashboard' | 'mealplan' | 'history' | 'profile' | 'scanning' | 'results';
+export type AppView = 'login' | 'signup' | 'dashboard' | 'mealplan' | 'history' | 'profile' | 'scanning' | 'results' | 'premium';

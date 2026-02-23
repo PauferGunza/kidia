@@ -1,15 +1,17 @@
 import React from 'react';
 import { UserProfile } from '../types';
-import { ArrowLeft, Droplet, Activity, Minus } from '../components/Icons';
+import { ArrowLeft, Droplet, Activity, Minus, Star, ChevronRight, LogOut, Edit2 } from '../components/Icons';
 
 interface ProfileViewProps {
   profile: UserProfile;
   onUpdateProfile: (updates: Partial<UserProfile>) => void;
   onComplete?: () => void;
   isOnboarding?: boolean;
+  onGoPremium?: () => void;
+  onLogout?: () => void;
 }
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfile, onComplete, isOnboarding = false }) => {
+export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfile, onComplete, isOnboarding = false, onGoPremium, onLogout }) => {
   
   const GoalCard = ({ icon: Icon, title, desc, isActive, toggleKey, showPlus = false }: any) => (
     <button 
@@ -57,49 +59,106 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfi
   );
 
   return (
-    <div className="flex-1 flex flex-col bg-kidia-bg h-full overflow-y-auto">
+    <div className="flex-1 flex flex-col bg-kidia-bg h-full overflow-y-auto pb-32">
       
       {/* Top Bar */}
-      <div className="px-6 py-6 flex items-center">
+      <div className="px-6 py-6 flex items-center justify-between">
         <button className="text-kidia-green">
           <ArrowLeft size={24} strokeWidth={2} />
         </button>
-        <div className="flex-1 flex justify-center gap-1.5 mr-6">
-          <div className="w-6 h-1.5 rounded-full bg-kidia-orange"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
-        </div>
+        {isOnboarding ? (
+          <div className="flex-1 flex justify-center gap-1.5 mr-6">
+            <div className="w-6 h-1.5 rounded-full bg-kidia-orange"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
+          </div>
+        ) : (
+          <button className="text-kidia-green">
+            <Edit2 size={20} strokeWidth={2} />
+          </button>
+        )}
       </div>
 
-      <div className="px-8 pb-8 pt-2 text-center">
-        <h1 className="text-[28px] font-bold text-kidia-green tracking-tight leading-tight mb-3">
-          Tell us about yourself
-        </h1>
-        <p className="text-[15px] text-kidia-greyText leading-relaxed px-4">
-          Select your health goal for a personalized experience.
-        </p>
-      </div>
+      {!isOnboarding && (
+        <div className="px-6 flex flex-col items-center mb-8">
+          <div className="w-24 h-24 bg-kidia-orangeLight rounded-full mb-4 flex items-center justify-center relative">
+            <span className="text-4xl font-black text-kidia-orange">{profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}</span>
+            <div className="absolute bottom-0 right-0 w-7 h-7 bg-kidia-orange rounded-full border-4 border-kidia-bg flex items-center justify-center">
+              <Star size={12} className="text-white" fill="currentColor" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-kidia-green mb-1">{profile.name || 'Utilizador'}</h2>
+          <p className="text-[14px] text-kidia-greyText">{profile.email || 'utilizador@kidia.ao'}</p>
+        </div>
+      )}
+
+      {isOnboarding && (
+        <div className="px-8 pb-6 pt-2 text-center">
+          <h1 className="text-[28px] font-bold text-kidia-green tracking-tight leading-tight mb-3">
+            Fale-nos sobre si
+          </h1>
+          <p className="text-[15px] text-kidia-greyText leading-relaxed px-4">
+            Selecione a sua meta de saúde para uma experiência personalizada.
+          </p>
+        </div>
+      )}
 
       <div className="px-6 flex-1 space-y-4">
+        
+        {!isOnboarding && onGoPremium && (
+          <button 
+            onClick={onGoPremium}
+            className="w-full bg-gradient-to-r from-[#111618] to-[#1A3C28] rounded-2xl p-5 flex items-center justify-between shadow-lg relative overflow-hidden active:scale-95 transition-transform mb-6"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-kidia-orange/20 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-12 h-12 bg-gradient-to-br from-kidia-orange to-yellow-500 rounded-full flex items-center justify-center shadow-md">
+                <Star size={24} className="text-white" fill="currentColor" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-white font-bold text-[17px] tracking-wide">Kidia Premium</h3>
+                <p className="text-white/70 text-xs mt-0.5">Desbloqueie todo o potencial</p>
+              </div>
+            </div>
+            <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center relative z-10">
+              <ChevronRight size={18} className="text-white" />
+            </div>
+          </button>
+        )}
+
+        <h3 className="text-[15px] font-bold text-kidia-green mb-2 px-1">As Suas Metas</h3>
+
         <GoalCard 
           icon={Droplet} 
           title="Sou Diabético" 
-          desc="Personalized monitoring for diabetes"
+          desc="Monitorização personalizada para diabetes"
           isActive={profile.diabetes} toggleKey="diabetes"
           showPlus={true}
         />
         <GoalCard 
           icon={Dumbbell} 
           title="Quero Emagrecer" 
-          desc="Focused plans for weight management"
+          desc="Planos focados na gestão de peso"
           isActive={profile.weightLoss} toggleKey="weightLoss"
         />
         <GoalCard 
           icon={Activity} 
           title="Hipertenso" 
-          desc="Specialized tracking for blood pressure"
+          desc="Acompanhamento especializado para tensão arterial"
           isActive={profile.hypertension} toggleKey="hypertension"
         />
+
+        {!isOnboarding && onLogout && (
+          <div className="pt-8 pb-4">
+            <button 
+              onClick={onLogout}
+              className="w-full flex items-center justify-center gap-2 text-red-500 font-bold py-4 rounded-2xl bg-red-50 active:scale-95 transition-transform"
+            >
+              <LogOut size={20} />
+              Terminar Sessão
+            </button>
+          </div>
+        )}
       </div>
 
       {isOnboarding && (
@@ -108,7 +167,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfi
             onClick={onComplete}
             className="w-full bg-kidia-orange text-white font-bold text-[17px] py-4 rounded-2xl shadow-sm active:scale-95 transition-transform"
           >
-            Continue
+            Continuar
           </button>
         </div>
       )}

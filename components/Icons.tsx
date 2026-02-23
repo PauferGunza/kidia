@@ -34,7 +34,17 @@ import {
   Plus,
   BookOpen,
   PieChart,
-  Bookmark
+  Bookmark,
+  Gift,
+  Zap,
+  Star,
+  Trophy,
+  ChevronRight,
+  Lock,
+  Mail,
+  LogOut,
+  Settings,
+  Edit2
 } from 'lucide-react';
 
 export {
@@ -73,5 +83,15 @@ export {
   Plus,
   BookOpen,
   PieChart,
-  Bookmark
+  Bookmark,
+  Gift,
+  Zap,
+  Star,
+  Trophy,
+  ChevronRight,
+  Lock,
+  Mail,
+  LogOut,
+  Settings,
+  Edit2
 };

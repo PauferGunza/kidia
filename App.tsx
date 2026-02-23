@@ -7,12 +7,18 @@ import { ScanningView } from './views/ScanningView';
 import { ResultsView } from './views/ResultsView';
 import { MealPlanView } from './views/MealPlanView';
 import { HistoryView } from './views/HistoryView';
+import { PremiumView } from './views/PremiumView';
+import { LoginView } from './views/LoginView';
+import { SignupView } from './views/SignupView';
 import { Home, User, Plus, Calendar, BarChart2 } from './components/Icons';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
-  const [currentView, setCurrentView] = useState<AppView>('dashboard');
+  const [currentView, setCurrentView] = useState<AppView>('login');
   const [profile, setProfile] = useState<UserProfile>({
+    name: '',
+    email: '',
     diabetes: false,
     hypertension: false,
     weightLoss: false,
@@ -27,6 +33,26 @@ function App() {
   const handleUpdateProfile = useCallback((updates: Partial<UserProfile>) => {
     setProfile(prev => ({ ...prev, ...updates }));
   }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    if (!hasCompletedOnboarding) {
+      setCurrentView('profile'); // Go to onboarding
+    } else {
+      setCurrentView('dashboard');
+    }
+  };
+
+  const handleSignup = (name: string, email: string) => {
+    setProfile(prev => ({ ...prev, name, email }));
+    setIsAuthenticated(true);
+    setCurrentView('profile'); // Go to onboarding
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentView('login');
+  };
 
   const triggerScanner = () => {
     fileInputRef.current?.click();
@@ -82,6 +108,18 @@ function App() {
     }
   };
 
+  // 0. Auth Gate
+  if (!isAuthenticated) {
+    return (
+      <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
+        <div className="w-full max-w-md bg-kidia-bg h-[100dvh] flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-3xl shadow-2xl">
+          {currentView === 'login' && <LoginView onLogin={handleLogin} onGoToSignup={() => setCurrentView('signup')} />}
+          {currentView === 'signup' && <SignupView onSignup={handleSignup} onGoToLogin={() => setCurrentView('login')} />}
+        </div>
+      </div>
+    );
+  }
+
   // 1. Onboarding Gate
   if (!hasCompletedOnboarding) {
     return (
@@ -90,7 +128,10 @@ function App() {
           <ProfileView 
             profile={profile} 
             onUpdateProfile={handleUpdateProfile} 
-            onComplete={() => setHasCompletedOnboarding(true)} 
+            onComplete={() => {
+              setHasCompletedOnboarding(true);
+              setCurrentView('dashboard');
+            }} 
             isOnboarding={true}
           />
         </div>
@@ -98,7 +139,7 @@ function App() {
     );
   }
 
-  const showBottomNav = currentView !== 'scanning' && currentView !== 'results';
+  const showBottomNav = currentView !== 'scanning' && currentView !== 'results' && currentView !== 'premium';
 
   return (
     <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
@@ -121,8 +162,9 @@ function App() {
         {currentView === 'dashboard' && <HomeView onTriggerScan={triggerScanner} />}
         {currentView === 'mealplan' && <MealPlanView />}
         {currentView === 'history' && <HistoryView />}
-        {currentView === 'profile' && <ProfileView profile={profile} onUpdateProfile={handleUpdateProfile} />}
+        {currentView === 'profile' && <ProfileView profile={profile} onUpdateProfile={handleUpdateProfile} onGoPremium={() => setCurrentView('premium')} onLogout={handleLogout} />}
         {currentView === 'scanning' && <ScanningView imagePreview={imagePreview} />}
+        {currentView === 'premium' && <PremiumView onBack={() => setCurrentView('profile')} />}
         {currentView === 'results' && scanResult && (
           <ResultsView result={scanResult} imagePreview={imagePreview} onBack={handleResetScan} />
         )}

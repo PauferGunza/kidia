@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, MoreVertical, Plus, Check, Clock } from '../components/Icons';
+import { ArrowLeft, MoreVertical, Plus, Check, Clock, Star, Flame } from '../components/Icons';
 
 export const MealPlanView: React.FC = () => {
   return (
@@ -42,6 +42,22 @@ export const MealPlanView: React.FC = () => {
 
       <div className="px-6 border-t border-gray-100 pt-6">
         
+        {/* Gamified Challenge Card */}
+        <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-5 mb-8 text-white shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/20 rounded-full -mr-8 -mt-8 blur-xl"></div>
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <Flame size={18} fill="currentColor" className="text-yellow-300" />
+            </div>
+            <span className="text-xs font-bold tracking-widest uppercase text-yellow-100">Desafio do Dia</span>
+          </div>
+          <h3 className="font-bold text-lg leading-tight mb-2 relative z-10">Experimente uma nova fruta local</h3>
+          <p className="text-sm text-white/90 mb-4 relative z-10">Adicione Maboque ou Pitaya ao seu lanche hoje e ganhe +100 pontos!</p>
+          <button className="bg-white text-orange-600 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full shadow-sm relative z-10 active:scale-95 transition-transform">
+            Aceitar Desafio
+          </button>
+        </div>
+
         {/* Summary Cards */}
         <div className="flex gap-4 mb-8">
           <div className="flex-1 bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
@@ -112,11 +128,11 @@ export const MealPlanView: React.FC = () => {
             {/* Dr Viva Tip */}
             <div className="bg-kidia-orangeLight rounded-xl p-4 mb-3 flex gap-3 relative border-l-4 border-kidia-orange">
               <div className="bg-white rounded-full p-1.5 h-fit text-kidia-orange shadow-sm shrink-0">
-                <Plus size={16} strokeWidth={3} />
+                <Star size={16} strokeWidth={3} fill="currentColor" className="text-yellow-500" />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-kidia-orange uppercase tracking-wider block mb-1">Dica da Drª Viva</span>
-                <p className="text-[13px] text-kidia-green leading-snug">"Rico em Ómega-3 para o desenvolvimento cerebral do seu bebé. O funge fornece os hidratos necessários para a saciedade."</p>
+                <span className="text-[10px] font-bold text-kidia-orange uppercase tracking-wider block mb-1">Sugestão do Dr. Viva</span>
+                <p className="text-[13px] text-kidia-green leading-snug">"Rico em Ómega-3 para a saúde cardiovascular. O funge fornece os hidratos necessários para a saciedade."</p>
               </div>
             </div>
 
@@ -128,7 +144,7 @@ export const MealPlanView: React.FC = () => {
                     <span className="flex items-center gap-1 text-[11px] font-bold text-[#2A8B58]"><div className="w-2 h-2 rounded-full bg-[#2A8B58]"></div> Nutritivo</span>
                     <span className="flex items-center gap-1 text-[11px] font-bold text-kidia-orange"><Clock size={12} /> 35 min</span>
                  </div>
-                 <button className="bg-kidia-orange text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 rounded-full shadow-sm">
+                 <button className="bg-kidia-orange text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 rounded-full shadow-sm active:scale-95 transition-transform">
                    Marcar como Feito
                  </button>
                </div>
