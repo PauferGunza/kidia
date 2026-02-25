@@ -44,7 +44,10 @@ import {
   Mail,
   LogOut,
   Settings,
-  Edit2
+  Edit2,
+  MessageCircle,
+  Send,
+  Mic
 } from 'lucide-react';
 
 export {
@@ -93,5 +96,8 @@ export {
   Mail,
   LogOut,
   Settings,
-  Edit2
+  Edit2,
+  MessageCircle,
+  Send,
+  Mic
 };

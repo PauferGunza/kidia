@@ -10,7 +10,8 @@ import { HistoryView } from './views/HistoryView';
 import { PremiumView } from './views/PremiumView';
 import { LoginView } from './views/LoginView';
 import { SignupView } from './views/SignupView';
-import { Home, User, Plus, Calendar, BarChart2 } from './components/Icons';
+import { ChatView } from './views/ChatView';
+import { Home, User, Plus, Calendar, BarChart2, MessageCircle } from './components/Icons';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -139,7 +140,7 @@ function App() {
     );
   }
 
-  const showBottomNav = currentView !== 'scanning' && currentView !== 'results' && currentView !== 'premium';
+  const showBottomNav = currentView !== 'scanning' && currentView !== 'results' && currentView !== 'premium' && currentView !== 'chat';
 
   return (
     <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
@@ -162,6 +163,7 @@ function App() {
         {currentView === 'dashboard' && <HomeView onTriggerScan={triggerScanner} />}
         {currentView === 'mealplan' && <MealPlanView />}
         {currentView === 'history' && <HistoryView />}
+        {currentView === 'chat' && <ChatView profile={profile} onBack={() => setCurrentView('dashboard')} />}
         {currentView === 'profile' && <ProfileView profile={profile} onUpdateProfile={handleUpdateProfile} onGoPremium={() => setCurrentView('premium')} onLogout={handleLogout} />}
         {currentView === 'scanning' && <ScanningView imagePreview={imagePreview} />}
         {currentView === 'premium' && <PremiumView onBack={() => setCurrentView('profile')} />}
@@ -177,9 +179,9 @@ function App() {
               <span className="text-[9px] font-bold tracking-wider uppercase">Início</span>
             </button>
             
-            <button onClick={() => setCurrentView('mealplan')} className={`flex flex-col items-center gap-1 mr-4 transition-colors ${currentView === 'mealplan' ? 'text-[#C26E28]' : 'text-[#A0A4A1]'}`}>
-              <Calendar size={22} strokeWidth={currentView === 'mealplan' ? 2.5 : 2} />
-              <span className="text-[9px] font-bold tracking-wider uppercase">Plano</span>
+            <button onClick={() => setCurrentView('chat' as any)} className={`flex flex-col items-center gap-1 mr-4 transition-colors ${currentView === ('chat' as any) ? 'text-[#C26E28]' : 'text-[#A0A4A1]'}`}>
+              <MessageCircle size={22} strokeWidth={currentView === ('chat' as any) ? 2.5 : 2} />
+              <span className="text-[9px] font-bold tracking-wider uppercase">Chat</span>
             </button>
 
             {/* Center FAB */}

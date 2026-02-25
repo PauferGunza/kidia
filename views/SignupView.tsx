@@ -31,7 +31,7 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
           Criar Conta
         </h1>
         <p className="text-[15px] text-kidia-greyText leading-relaxed px-4 mb-8">
-          Junte-se à comunidade Kidia e melhore a sua saúde.
+          Junte-se à nossa comunidade Kidia e melhore a sua saúde.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

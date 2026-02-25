@@ -18,4 +18,4 @@ export interface ScanResult {
   safetyAlert: string;
 }
 
-export type AppView = 'login' | 'signup' | 'dashboard' | 'mealplan' | 'history' | 'profile' | 'scanning' | 'results' | 'premium';
+export type AppView = 'login' | 'signup' | 'dashboard' | 'mealplan' | 'history' | 'profile' | 'scanning' | 'results' | 'premium' | 'chat';
