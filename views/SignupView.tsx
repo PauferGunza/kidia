@@ -2,20 +2,60 @@ import React, { useState } from 'react';
 import { Mail, Lock, User, ArrowLeft } from '../components/Icons';
 
 interface SignupViewProps {
-  onSignup: (name: string, email: string) => void;
+  onSignup: (name: string, email: string, password: string) => void;
   onGoToLogin: () => void;
+  error: string | null;
+  clearError: () => void;
 }
 
-export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin }) => {
+export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin, error, clearError }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [validationError, setValidationError] = useState('');
+  
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && email && password) {
-      onSignup(name, email);
+    setValidationError('');
+    clearError();
+    
+    if (!name.trim()) {
+      setValidationError('Por favor, insira o seu nome completo');
+      return;
     }
+    
+    if (!email.trim()) {
+      setValidationError('Por favor, insira o seu e-mail');
+      return;
+    }
+    
+    if (!validateEmail(email)) {
+      setValidationError('Por favor, insira um e-mail válido');
+      return;
+    }
+    
+    if (!password) {
+      setValidationError('Por favor, crie uma palavra-passe');
+      return;
+    }
+    
+    if (password.length < 6) {
+      setValidationError('A palavra-passe deve ter pelo menos 6 caracteres');
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      setValidationError('As palavras-passe não coincidem');
+      return;
+    }
+    
+    onSignup(name, email, password);
   };
 
   return (
@@ -34,6 +74,12 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
           Junte-se à nossa comunidade Kidia e melhore a sua saúde.
         </p>
 
+        {(error || validationError) && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm font-medium">
+            {error || validationError}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -44,8 +90,8 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nome completo"
-              className="w-full pl-11 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70"
-              required
+              className={`w-full pl-11 pr-4 py-4 bg-white border rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70 ${validationError || error ? 'border-red-300' : 'border-gray-200'}`}
+              disabled={false}
             />
           </div>
 
@@ -58,8 +104,8 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="E-mail"
-              className="w-full pl-11 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70"
-              required
+              className={`w-full pl-11 pr-4 py-4 bg-white border rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70 ${validationError || error ? 'border-red-300' : 'border-gray-200'}`}
+              disabled={false}
             />
           </div>
 
@@ -72,14 +118,29 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Palavra-passe"
-              className="w-full pl-11 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70"
-              required
+              className={`w-full pl-11 pr-4 py-4 bg-white border rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70 ${validationError || error ? 'border-red-300' : 'border-gray-200'}`}
+              disabled={false}
+            />
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Lock size={20} className="text-kidia-greyText" />
+            </div>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirmar palavra-passe"
+              className={`w-full pl-11 pr-4 py-4 bg-white border rounded-2xl focus:outline-none focus:ring-2 focus:ring-kidia-orange/50 focus:border-kidia-orange transition-all text-[15px] font-medium text-kidia-green placeholder:text-kidia-greyText/70 ${validationError || error ? 'border-red-300' : 'border-gray-200'}`}
+              disabled={false}
             />
           </div>
 
           <button 
             type="submit"
-            className="w-full bg-kidia-orange text-white font-bold text-[17px] py-4 rounded-2xl shadow-sm active:scale-95 transition-transform mt-8"
+            className="w-full bg-kidia-orange text-white font-bold text-[17px] py-4 rounded-2xl shadow-sm active:scale-95 transition-transform mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={false}
           >
             Registar
           </button>
