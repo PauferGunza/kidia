@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { UserProfile, ScanResult, AppView } from './types';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { UserProfile, ScanResult, AppView, UserStats } from './types';
 import { analyzeImage } from './services/geminiService';
 import { HomeView } from './views/HomeView';
 import { ProfileView } from './views/ProfileView';
@@ -12,11 +12,16 @@ import { LoginView } from './views/LoginView';
 import { SignupView } from './views/SignupView';
 import { ChatView } from './views/ChatView';
 import { Home, User, Plus, Calendar, BarChart2, MessageCircle } from './components/Icons';
+import { db, authAPI } from './db';
+import { useLiveQuery } from 'dexie-react-hooks';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [currentView, setCurrentView] = useState<AppView>('login');
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
     email: '',
@@ -31,27 +36,79 @@ function App() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Carregar dados do utilizador autenticado
+  useEffect(() => {
+    if (currentUser?.id) {
+      authAPI.updateStreak(currentUser.id);
+      loadUserData();
+    }
+  }, [currentUser]);
+
+  const loadUserData = async () => {
+    if (!currentUser?.id) return;
+    
+    try {
+      const stats = await authAPI.getUserStats(currentUser.id);
+      if (stats) {
+        setUserStats(stats);
+      }
+      
+      // Carregar perfil da base de dados
+      const savedProfile = await db.profile.first();
+      if (savedProfile) {
+        setProfile(savedProfile);
+        setHasCompletedOnboarding(true);
+      }
+    } catch (err) {
+      console.error('Erro ao carregar dados:', err);
+    }
+  };
+
   const handleUpdateProfile = useCallback((updates: Partial<UserProfile>) => {
     setProfile(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    if (!hasCompletedOnboarding) {
-      setCurrentView('profile'); // Go to onboarding
-    } else {
-      setCurrentView('dashboard');
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const user = await authAPI.login(email, password);
+      if (user) {
+        setCurrentUser(user);
+        setProfile({ ...profile, email: user.email || '', name: user.name || '' });
+        setIsAuthenticated(true);
+        
+        // Verificar se já completou onboarding
+        const savedProfile = await db.profile.first();
+        if (savedProfile) {
+          setHasCompletedOnboarding(true);
+          setCurrentView('dashboard');
+        } else {
+          setCurrentView('profile');
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer login');
     }
   };
 
-  const handleSignup = (name: string, email: string) => {
-    setProfile(prev => ({ ...prev, name, email }));
-    setIsAuthenticated(true);
-    setCurrentView('profile'); // Go to onboarding
+  const handleSignup = async (name: string, email: string, password: string) => {
+    try {
+      const user = await authAPI.signup(email, password, name);
+      if (user) {
+        setCurrentUser(user);
+        setProfile({ ...profile, email, name });
+        setIsAuthenticated(true);
+        setCurrentView('profile');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erro ao criar conta');
+    }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setCurrentUser(null);
+    setUserStats(null);
+    setHasCompletedOnboarding(false);
     setCurrentView('login');
   };
 
@@ -63,7 +120,7 @@ function App() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (fileInputRef.current) fileInputRef.current.value = ''; // reset
+    if (fileInputRef.current) fileInputRef.current.value = '';
 
     setError(null);
     setCurrentView('scanning');
@@ -81,6 +138,24 @@ function App() {
         try {
           const result = await analyzeImage(base64Data, mimeType, profile);
           setScanResult(result);
+          
+          // Adicionar pontos pelo scan
+          if (currentUser?.id) {
+            await authAPI.addPoints(currentUser.id, 50);
+            await loadUserData();
+            
+            // Salvar no histórico
+            await db.history.add({
+              userId: currentUser.id,
+              date: new Date().toISOString(),
+              itemName: result.itemName,
+              calories: result.calories,
+              carbs: result.carbs,
+              sodium: result.sodium,
+              vitamins: result.vitamins
+            });
+          }
+          
           setCurrentView('results');
         } catch (apiError: any) {
           console.error(apiError);
@@ -109,13 +184,26 @@ function App() {
     }
   };
 
+  const handleSaveProfile = async () => {
+    if (!currentUser?.id) return;
+    
+    try {
+      await db.profile.clear();
+      await db.profile.add(profile);
+      setHasCompletedOnboarding(true);
+      setCurrentView('dashboard');
+    } catch (err) {
+      setError('Erro ao salvar perfil');
+    }
+  };
+
   // 0. Auth Gate
   if (!isAuthenticated) {
     return (
       <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
         <div className="w-full max-w-md bg-kidia-bg h-[100dvh] flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-3xl shadow-2xl">
-          {currentView === 'login' && <LoginView onLogin={handleLogin} onGoToSignup={() => setCurrentView('signup')} />}
-          {currentView === 'signup' && <SignupView onSignup={handleSignup} onGoToLogin={() => setCurrentView('login')} />}
+          {currentView === 'login' && <LoginView onLogin={handleLogin} onGoToSignup={() => setCurrentView('signup')} error={error} clearError={() => setError(null)} />}
+          {currentView === 'signup' && <SignupView onSignup={handleSignup} onGoToLogin={() => setCurrentView('login')} error={error} clearError={() => setError(null)} />}
         </div>
       </div>
     );
@@ -129,10 +217,7 @@ function App() {
           <ProfileView 
             profile={profile} 
             onUpdateProfile={handleUpdateProfile} 
-            onComplete={() => {
-              setHasCompletedOnboarding(true);
-              setCurrentView('dashboard');
-            }} 
+            onComplete={handleSaveProfile}
             isOnboarding={true}
           />
         </div>
@@ -160,10 +245,10 @@ function App() {
         )}
 
         {/* Dynamic Views */}
-        {currentView === 'dashboard' && <HomeView onTriggerScan={triggerScanner} />}
-        {currentView === 'mealplan' && <MealPlanView />}
-        {currentView === 'history' && <HistoryView />}
-        {currentView === 'chat' && <ChatView profile={profile} onBack={() => setCurrentView('dashboard')} />}
+        {currentView === 'dashboard' && <HomeView onTriggerScan={triggerScanner} profile={profile} userStats={userStats} />}
+        {currentView === 'mealplan' && <MealPlanView profile={profile} />}
+        {currentView === 'history' && <HistoryView userId={currentUser?.id} />}
+        {currentView === 'chat' && <ChatView profile={profile} onBack={() => setCurrentView('dashboard')} userId={currentUser?.id} />}
         {currentView === 'profile' && <ProfileView profile={profile} onUpdateProfile={handleUpdateProfile} onGoPremium={() => setCurrentView('premium')} onLogout={handleLogout} />}
         {currentView === 'scanning' && <ScanningView imagePreview={imagePreview} />}
         {currentView === 'premium' && <PremiumView onBack={() => setCurrentView('profile')} />}
