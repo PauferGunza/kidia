@@ -15,28 +15,28 @@ export const MealPlanView: React.FC = () => {
       {/* Date Carousel */}
       <div className="flex justify-between items-center px-6 mb-6">
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-kidia-greyText uppercase mb-1">Seg</span>
-          <span className="text-lg font-bold text-kidia-greyText">12</span>
+          <span className="text-[10px] font-bold text-kidia-grey-text uppercase mb-1">Seg</span>
+          <span className="text-lg font-bold text-kidia-grey-text">12</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-kidia-greyText uppercase mb-1">Ter</span>
-          <span className="text-lg font-bold text-kidia-greyText">13</span>
+          <span className="text-[10px] font-bold text-kidia-grey-text uppercase mb-1">Ter</span>
+          <span className="text-lg font-bold text-kidia-grey-text">13</span>
         </div>
         <div className="flex flex-col items-center bg-kidia-orange text-white rounded-xl px-4 py-2 shadow-md">
           <span className="text-[10px] font-bold uppercase mb-0.5">Qua</span>
           <span className="text-lg font-bold">14</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-kidia-greyText uppercase mb-1">Qui</span>
-          <span className="text-lg font-bold text-kidia-greyText">15</span>
+          <span className="text-[10px] font-bold text-kidia-grey-text uppercase mb-1">Qui</span>
+          <span className="text-lg font-bold text-kidia-grey-text">15</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-kidia-greyText uppercase mb-1">Sex</span>
-          <span className="text-lg font-bold text-kidia-greyText">16</span>
+          <span className="text-[10px] font-bold text-kidia-grey-text uppercase mb-1">Sex</span>
+          <span className="text-lg font-bold text-kidia-grey-text">16</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold text-kidia-greyText uppercase mb-1">Sáb</span>
-          <span className="text-lg font-bold text-kidia-greyText">17</span>
+          <span className="text-[10px] font-bold text-kidia-grey-text uppercase mb-1">Sáb</span>
+          <span className="text-lg font-bold text-kidia-grey-text">17</span>
         </div>
       </div>
 
@@ -61,17 +61,17 @@ export const MealPlanView: React.FC = () => {
         {/* Summary Cards */}
         <div className="flex gap-4 mb-8">
           <div className="flex-1 bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
-            <span className="text-[10px] font-bold text-kidia-greyText uppercase tracking-wider block mb-1">Planeado</span>
+            <span className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-wider block mb-1">Planeado</span>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold text-kidia-green">1,450</span>
-              <span className="text-xs text-kidia-greyText font-medium">kcal</span>
+              <span className="text-xs text-kidia-grey-text font-medium">kcal</span>
             </div>
           </div>
           <div className="flex-1 bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
-            <span className="text-[10px] font-bold text-kidia-greyText uppercase tracking-wider block mb-1">Meta Diária</span>
+            <span className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-wider block mb-1">Meta Diária</span>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold text-kidia-orange">1,800</span>
-              <span className="text-xs text-kidia-greyText font-medium">kcal</span>
+              <span className="text-xs text-kidia-grey-text font-medium">kcal</span>
             </div>
           </div>
         </div>
@@ -85,7 +85,7 @@ export const MealPlanView: React.FC = () => {
             
             <div className="flex justify-between items-start mb-1">
               <div className="flex items-center gap-2">
-                <span className="text-kidia-greyText text-xs font-bold tracking-widest">08:30 • PEQUENO ALMOÇO</span>
+                <span className="text-kidia-grey-text text-xs font-bold tracking-widest">08:30 • PEQUENO ALMOÇO</span>
               </div>
               <div className="bg-[#F2F4F2] px-2 py-1.5 rounded-lg text-center">
                 <span className="text-kidia-green font-bold text-xs block leading-none">320</span>
@@ -104,7 +104,7 @@ export const MealPlanView: React.FC = () => {
                   <div className="w-3 h-3 rounded-full bg-[#2A8B58] flex items-center justify-center"><Check size={8} className="text-white" strokeWidth={4} /></div>
                   <span className="text-[10px] font-bold tracking-wider uppercase">Excelente (92/100)</span>
                 </div>
-                <p className="text-[13px] text-kidia-greyText italic leading-snug">"Comece o dia com energia de libertação lenta."</p>
+                <p className="text-[13px] text-kidia-grey-text italic leading-snug">"Comece o dia com energia de libertação lenta."</p>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ export const MealPlanView: React.FC = () => {
             
             <div className="flex justify-between items-start mb-1">
               <div className="flex items-center gap-2">
-                <span className="text-kidia-greyText text-xs font-bold tracking-widest">16:30 • LANCHE</span>
+                <span className="text-kidia-grey-text text-xs font-bold tracking-widest">16:30 • LANCHE</span>
               </div>
               <div className="bg-[#F2F4F2] px-2 py-1.5 rounded-lg text-center">
                 <span className="text-kidia-green font-bold text-xs block leading-none">180</span>
@@ -168,7 +168,7 @@ export const MealPlanView: React.FC = () => {
             <h3 className="font-bold text-kidia-green text-lg leading-tight mb-3 pr-10">Iogurte Grego com Nozes</h3>
             
             <div className="bg-white rounded-2xl p-4 shadow-soft border border-gray-50">
-                <p className="text-[13px] text-kidia-greyText leading-snug">Uma opção leve para manter o metabolismo ativo até ao jantar.</p>
+                <p className="text-[13px] text-kidia-grey-text leading-snug">Uma opção leve para manter o metabolismo ativo até ao jantar.</p>
             </div>
           </div>
 
@@ -178,7 +178,7 @@ export const MealPlanView: React.FC = () => {
             
             <div className="flex justify-between items-start mb-1">
               <div className="flex items-center gap-2">
-                <span className="text-kidia-greyText text-xs font-bold tracking-widest">20:00 • JANTAR</span>
+                <span className="text-kidia-grey-text text-xs font-bold tracking-widest">20:00 • JANTAR</span>
               </div>
               <div className="bg-[#F2F4F2] px-2 py-1.5 rounded-lg text-center">
                 <span className="text-kidia-green font-bold text-xs block leading-none">370</span>

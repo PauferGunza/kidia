@@ -3,6 +3,7 @@ import { UserProfile } from '../types';
 import { ArrowLeft, Send, Sparkles, Mic } from '../components/Icons';
 import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
+import { Logo } from '../components/Logo';
 
 interface ChatViewProps {
   profile: UserProfile;
@@ -128,46 +129,52 @@ Responde sempre de forma acolhedora, profissional e com foco na realidade angola
   return (
     <div className="flex-1 flex flex-col bg-kidia-bg h-full overflow-hidden">
       {/* Top Header */}
-      <div className="px-6 py-5 flex items-center justify-between bg-white shadow-sm z-10 shrink-0">
-        <button onClick={onBack} className="text-kidia-green">
-          <ArrowLeft size={24} strokeWidth={2} />
+      <div className="px-6 py-10 flex items-center justify-between bg-white shadow-soft z-10 shrink-0 border-b border-gray-50">
+        <button onClick={onBack} className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-kidia-green">
+          <ArrowLeft size={20} strokeWidth={2.5} />
         </button>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-kidia-orangeLight rounded-full flex items-center justify-center">
-            <Sparkles size={16} className="text-kidia-orange" />
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <h1 className="text-lg font-extrabold text-kidia-green tracking-tight">Dr. Viva</h1>
           </div>
-          <h1 className="text-[17px] font-bold text-kidia-green">Dr. Viva</h1>
+          <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest">Online agora</p>
         </div>
-        <div className="w-6"></div> {/* Spacer */}
+        <Logo size="sm" showText={false} />
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div 
-              className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${
-                msg.sender === 'user' 
-                  ? 'bg-kidia-orange text-white rounded-tr-none' 
-                  : 'bg-white text-kidia-green border border-gray-100 rounded-tl-none'
-              }`}
-            >
-              {msg.sender === 'ai' ? (
-                <div className="prose prose-sm prose-p:leading-relaxed prose-a:text-kidia-orange max-w-none">
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                </div>
-              ) : (
-                <p className="text-[15px] leading-relaxed">{msg.text}</p>
-              )}
+            <div className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%]`}>
+              <div 
+                className={`rounded-[2rem] p-5 shadow-soft ${
+                  msg.sender === 'user' 
+                    ? 'bg-kidia-green-primary text-white rounded-tr-none' 
+                    : 'bg-white text-kidia-green border border-gray-50 rounded-tl-none'
+                }`}
+              >
+                {msg.sender === 'ai' ? (
+                  <div className="prose prose-sm prose-p:leading-relaxed prose-strong:text-kidia-green prose-a:text-kidia-orange max-w-none font-medium">
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="text-[15px] leading-relaxed font-semibold">{msg.text}</p>
+                )}
+              </div>
+              <span className="text-[10px] font-bold text-kidia-grey-text mt-2 px-2 uppercase tracking-widest">
+                {msg.sender === 'ai' ? 'Dr. Viva' : 'Tu'}
+              </span>
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-none p-4 shadow-sm flex items-center gap-2">
-              <div className="w-2 h-2 bg-kidia-orange rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-kidia-orange rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-2 h-2 bg-kidia-orange rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            <div className="bg-white border border-gray-50 rounded-[2rem] rounded-tl-none p-5 shadow-soft flex items-center gap-2">
+              <div className="w-2 h-2 bg-kidia-green-primary rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-kidia-green-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 bg-kidia-green-primary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
             </div>
           </div>
         )}
@@ -175,28 +182,28 @@ Responde sempre de forma acolhedora, profissional e com foco na realidade angola
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-100 shrink-0">
-        <div className="flex items-end gap-2 bg-gray-50 rounded-2xl p-2 border border-gray-200 focus-within:border-kidia-orange focus-within:ring-1 focus-within:ring-kidia-orange transition-all">
+      <div className="p-6 bg-white border-t border-gray-50 shrink-0">
+        <div className="flex items-end gap-3 bg-gray-50 rounded-[2rem] p-2.5 border border-gray-100 focus-within:border-kidia-green-primary focus-within:ring-4 focus-within:ring-kidia-green-primary/5 transition-all">
           <button 
             onClick={toggleListening}
-            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-0.5 transition-colors ${isListening ? 'bg-red-100 text-red-500 animate-pulse' : 'text-gray-400 hover:text-kidia-orange'}`}
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all ${isListening ? 'bg-red-50 text-red-500 animate-pulse' : 'text-gray-400 hover:text-kidia-green-primary hover:bg-white'}`}
           >
-            <Mic size={20} />
+            <Mic size={22} />
           </button>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={isListening ? "A ouvir..." : "Pergunte ao Dr. Viva..."}
-            className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[44px] py-3 px-1 text-[15px] text-kidia-green placeholder:text-gray-400"
+            className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[48px] py-3.5 px-2 text-[15px] text-kidia-green font-medium placeholder:text-gray-400"
             rows={1}
           />
           <button 
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="w-11 h-11 bg-kidia-orange rounded-xl flex items-center justify-center text-white shrink-0 disabled:opacity-50 disabled:bg-gray-300 transition-colors mb-0.5"
+            className="w-12 h-12 bg-kidia-green-primary rounded-2xl flex items-center justify-center text-white shrink-0 disabled:opacity-50 disabled:bg-gray-300 shadow-lg shadow-green-900/10 active:scale-95 transition-all"
           >
-            <Send size={20} className="ml-1" />
+            <Send size={22} className="ml-1" />
           </button>
         </div>
       </div>

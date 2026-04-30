@@ -140,7 +140,7 @@ function App() {
     );
   }
 
-  const showBottomNav = currentView !== 'scanning' && currentView !== 'results' && currentView !== 'premium' && currentView !== 'chat';
+  const showBottomNav = !['scanning', 'results', 'premium', 'chat'].includes(currentView as string);
 
   return (
     <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
@@ -173,33 +173,36 @@ function App() {
 
         {/* Unified Bottom Navigation matching Image 4 */}
         {showBottomNav && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-between items-center px-8 pb-6 pt-3 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
-            <button onClick={() => setCurrentView('dashboard')} className={`flex flex-col items-center gap-1 transition-colors ${currentView === 'dashboard' ? 'text-[#C26E28]' : 'text-[#A0A4A1]'}`}>
-              <Home size={22} strokeWidth={currentView === 'dashboard' ? 2.5 : 2} fill={currentView === 'dashboard' ? 'currentColor' : 'none'} />
-              <span className="text-[9px] font-bold tracking-wider uppercase">Início</span>
+          <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-50 flex justify-between items-center px-6 pb-8 pt-4 z-30 shadow-premium">
+            <button onClick={() => setCurrentView('dashboard')} className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${currentView === 'dashboard' ? 'text-kidia-orange' : 'text-kidia-grey-text'}`}>
+              <Home size={22} strokeWidth={currentView === 'dashboard' ? 3 : 2} fill={currentView === 'dashboard' ? 'currentColor' : 'none'} />
+              <span className="text-[9px] font-black tracking-widest uppercase">Início</span>
             </button>
             
-            <button onClick={() => setCurrentView('chat' as any)} className={`flex flex-col items-center gap-1 mr-4 transition-colors ${currentView === ('chat' as any) ? 'text-[#C26E28]' : 'text-[#A0A4A1]'}`}>
-              <MessageCircle size={22} strokeWidth={currentView === ('chat' as any) ? 2.5 : 2} />
-              <span className="text-[9px] font-bold tracking-wider uppercase">Chat</span>
+            <button onClick={() => setCurrentView('chat')} className={`flex flex-col items-center gap-1.5 mr-4 transition-all active:scale-90 ${(currentView as string) === 'chat' ? 'text-kidia-orange' : 'text-kidia-grey-text'}`}>
+              <MessageCircle size={22} strokeWidth={(currentView as string) === 'chat' ? 3 : 2} fill={(currentView as string) === 'chat' ? 'currentColor' : 'none'} />
+              <span className="text-[9px] font-black tracking-widest uppercase">Chat</span>
             </button>
 
             {/* Center FAB */}
-            <button 
-              onClick={triggerScanner}
-              className="w-[52px] h-[52px] bg-[#1A3C28] rounded-full shadow-[0_8px_20px_rgba(26,60,40,0.4)] flex items-center justify-center transform -translate-y-6 active:scale-95 transition-transform"
-            >
-              <Plus size={28} className="text-white" strokeWidth={2.5} />
+            <div className="relative -translate-y-6">
+              <div className="absolute inset-0 bg-kidia-green-primary/20 blur-xl rounded-full"></div>
+              <button 
+                onClick={triggerScanner}
+                className="w-16 h-16 bg-kidia-green-primary rounded-[1.5rem] shadow-premium flex items-center justify-center relative z-10 active:scale-95 transition-all group"
+              >
+                <Plus size={32} className="text-white group-hover:rotate-90 transition-transform" strokeWidth={3} />
+              </button>
+            </div>
+
+            <button onClick={() => setCurrentView('history')} className={`flex flex-col items-center gap-1.5 ml-4 transition-all active:scale-90 ${currentView === 'history' ? 'text-kidia-orange' : 'text-kidia-grey-text'}`}>
+              <BarChart2 size={22} strokeWidth={currentView === 'history' ? 3 : 2} />
+              <span className="text-[9px] font-black tracking-widest uppercase">Progresso</span>
             </button>
 
-            <button onClick={() => setCurrentView('history')} className={`flex flex-col items-center gap-1 ml-4 transition-colors ${currentView === 'history' ? 'text-[#C26E28]' : 'text-[#A0A4A1]'}`}>
-              <BarChart2 size={22} strokeWidth={currentView === 'history' ? 2.5 : 2} />
-              <span className="text-[9px] font-bold tracking-wider uppercase">Progresso</span>
-            </button>
-
-            <button onClick={() => setCurrentView('profile')} className={`flex flex-col items-center gap-1 transition-colors ${currentView === 'profile' ? 'text-[#C26E28]' : 'text-[#A0A4A1]'}`}>
-              <User size={22} strokeWidth={currentView === 'profile' ? 2.5 : 2} fill={currentView === 'profile' ? 'currentColor' : 'none'} />
-              <span className="text-[9px] font-bold tracking-wider uppercase">Perfil</span>
+            <button onClick={() => setCurrentView('profile')} className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${currentView === 'profile' ? 'text-kidia-orange' : 'text-kidia-grey-text'}`}>
+              <User size={22} strokeWidth={currentView === 'profile' ? 3 : 2} fill={currentView === 'profile' ? 'currentColor' : 'none'} />
+              <span className="text-[9px] font-black tracking-widest uppercase">Perfil</span>
             </button>
           </div>
         )}
