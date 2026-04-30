@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { UserProfile, ScanResult, AppView } from './types';
 import { analyzeImage } from './services/geminiService';
 import { HomeView } from './views/HomeView';
@@ -13,6 +13,7 @@ import { SignupView } from './views/SignupView';
 import { ChatView } from './views/ChatView';
 import { SettingsView } from './views/SettingsView';
 import { Home, User, Plus, Calendar, BarChart2, MessageCircle, Settings } from './components/Icons';
+import { db } from './db';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -32,8 +33,48 @@ function App() {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load profile from DB on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const storedProfile = await db.profile.toCollection().first();
+        if (storedProfile) {
+          setProfile(storedProfile);
+          setIsAuthenticated(true);
+          setHasCompletedOnboarding(true);
+          setCurrentView('dashboard');
+        }
+      } catch (err) {
+        console.error("Failed to load profile:", err);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+    loadProfile();
+  }, []);
+
+  // Save profile to DB whenever it changes
+  useEffect(() => {
+    if (!isLoadingProfile && profile.email) {
+      const saveProfile = async () => {
+        try {
+          const storedProfile = await db.profile.toCollection().first();
+          if (storedProfile) {
+            await db.profile.update(storedProfile.id!, profile);
+          } else {
+            await db.profile.add(profile);
+          }
+        } catch (err) {
+          console.error("Failed to save profile:", err);
+        }
+      };
+      saveProfile();
+    }
+  }, [profile, isLoadingProfile]);
 
   const handleUpdateProfile = useCallback((updates: Partial<UserProfile>) => {
     setProfile(prev => ({ ...prev, ...updates }));
@@ -54,9 +95,21 @@ function App() {
     setCurrentView('profile'); // Go to onboarding
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await db.profile.clear();
     setIsAuthenticated(false);
     setCurrentView('login');
+    setHasCompletedOnboarding(false);
+    setProfile({
+      name: '',
+      email: '',
+      diabetes: false,
+      hypertension: false,
+      weightLoss: false,
+      weeklyGoal: 'control',
+      currentWeight: 75,
+      targetWeight: 70
+    });
   };
 
   const triggerScanner = () => {
@@ -114,10 +167,10 @@ function App() {
   };
 
   // 0. Auth Gate
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isLoadingProfile) {
     return (
-      <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
-        <div className="w-full max-w-md bg-kidia-bg h-[100dvh] flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-3xl shadow-2xl">
+      <div className="flex justify-center bg-gray-950 w-full min-h-screen font-sans">
+        <div className="w-full max-w-lg bg-kidia-bg h-screen flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-[3rem] shadow-2xl border border-white/5">
           {currentView === 'login' && <LoginView onLogin={handleLogin} onGoToSignup={() => setCurrentView('signup')} />}
           {currentView === 'signup' && <SignupView onSignup={handleSignup} onGoToLogin={() => setCurrentView('login')} />}
         </div>
@@ -125,11 +178,19 @@ function App() {
     );
   }
 
+  if (isLoadingProfile) {
+    return (
+      <div className="flex justify-center items-center bg-gray-950 w-full min-h-screen font-sans">
+        <div className="text-kidia-green-primary animate-pulse font-black text-2xl">KIDIA...</div>
+      </div>
+    );
+  }
+
   // 1. Onboarding Gate
   if (!hasCompletedOnboarding) {
     return (
-      <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
-        <div className="w-full max-w-md bg-kidia-bg h-[100dvh] flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-3xl shadow-2xl">
+      <div className="flex justify-center bg-gray-950 w-full min-h-screen font-sans">
+        <div className="w-full max-w-lg bg-kidia-bg h-screen flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-[3rem] shadow-2xl border border-white/5">
           <ProfileView 
             profile={profile} 
             onUpdateProfile={handleUpdateProfile} 
@@ -138,6 +199,7 @@ function App() {
               setCurrentView('dashboard');
             }} 
             isOnboarding={true}
+            onGoSettings={() => setCurrentView('settings')}
           />
         </div>
       </div>
@@ -147,8 +209,8 @@ function App() {
   const showBottomNav = !['scanning', 'results', 'premium', 'chat'].includes(currentView as string);
 
   return (
-    <div className="flex justify-center bg-gray-900 w-full min-h-screen font-sans">
-      <div className="w-full max-w-md bg-kidia-bg h-[100dvh] flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-3xl shadow-2xl">
+    <div className="flex justify-center bg-gray-950 w-full min-h-screen font-sans">
+      <div className="w-full max-w-lg bg-kidia-bg h-screen flex flex-col relative overflow-hidden sm:h-[95vh] sm:my-auto sm:rounded-[3rem] shadow-2xl border border-white/5">
         
         {/* Hidden File Input for the FAB */}
         <input 

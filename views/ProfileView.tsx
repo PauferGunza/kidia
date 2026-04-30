@@ -154,7 +154,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="h-px flex-1 bg-kidia-green-primary/10 ml-6"></div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <GoalCard 
             icon={Droplet} 
             title="Diabetes" 

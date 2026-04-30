@@ -198,7 +198,13 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, imagePreview, 
           </div>
 
           <div className="flex flex-col gap-5">
-            <button onClick={onBack} className="w-full bg-kidia-green-dark text-white font-black text-xl py-6 rounded-[2rem] shadow-premium flex items-center justify-center gap-4 active:scale-95 transition-all">
+            <button 
+              onClick={async () => {
+                await handleSaveResults();
+                onBack();
+              }} 
+              className="w-full bg-kidia-green-dark text-white font-black text-xl py-6 rounded-[2rem] shadow-premium flex items-center justify-center gap-4 active:scale-95 transition-all"
+            >
               <Bookmark size={24} fill="currentColor" />
               Adicionar ao Diário
             </button>

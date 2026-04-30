@@ -29,7 +29,7 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-kidia-green-dark/95 via-kidia-green-dark/70 to-kidia-green-dark/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-kidia-green-dark/40 via-transparent to-kidia-green-dark/30"></div>
       </div>
 
       <div className="relative z-10 flex flex-col h-full px-8 pt-12 pb-12 overflow-y-auto">
@@ -41,7 +41,7 @@ export const SignupView: React.FC<SignupViewProps> = ({ onSignup, onGoToLogin })
           <div className="w-12"></div> {/* Spacer */}
         </div>
         
-        <div className="glass-card rounded-[3rem] p-10 shadow-premium mt-auto border-white/30">
+        <div className="glass-card rounded-[3rem] p-10 shadow-premium mt-auto mb-6 border-white/30">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-black text-kidia-green tracking-tight leading-tight mb-3">
               Criar Conta
