@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Droplet, Flame, Smile, Camera, Zap, Star, Trophy, Gift, ChevronRight, CheckCircle } from '../components/Icons';
+import { Droplet, Flame, Smile, Camera, Zap, Star, Trophy, Gift, ChevronRight, CheckCircle, Plus } from '../components/Icons';
 import { Logo } from '../components/Logo';
+
+import { UserProfile } from '../types';
 
 interface HomeViewProps {
   onTriggerScan: () => void;
+  profile: UserProfile;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan }) => {
+export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) => {
   const [activeTab, setActiveTab] = useState<'diarias' | 'semanais' | 'mensais'>('diarias');
 
   return (
@@ -17,27 +20,47 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan }) => {
         <Logo size="sm" />
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest">Nível 5</p>
-            <p className="text-sm font-extrabold text-kidia-green">Ana Paula</p>
+            <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest leading-none mb-1">Nível 5</p>
+            <p className="text-sm font-black text-kidia-green-dark">{profile.name || 'Utilizador'}</p>
           </div>
-          <div className="w-10 h-10 rounded-full overflow-hidden shadow-soft border-2 border-white">
-            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1bfff1?auto=format&fit=crop&q=80&w=150" alt="Avatar" className="w-full h-full object-cover" />
+          <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-[0_8px_20px_-5px_rgba(0,0,0,0.1)] border-2 border-white bg-white flex items-center justify-center">
+            <span className="text-xl font-black text-kidia-green-primary">{profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}</span>
           </div>
         </div>
       </div>
 
-      {/* Bento Stats Grid - Inspired by Image 11 & 12 */}
+      {/* Primary Action: QR/Camera Scanner */}
+      <button 
+        onClick={onTriggerScan}
+        className="w-full bg-kidia-green-primary rounded-[2.5rem] p-6 mb-8 flex items-center justify-between shadow-premium active:scale-[0.98] transition-all group relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+        <div className="flex items-center gap-5 relative z-10">
+          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform">
+            <Camera size={32} className="text-kidia-green-primary" strokeWidth={2.5} />
+          </div>
+          <div className="text-left">
+            <h3 className="text-white font-black text-xl tracking-tight">Analisar Prato</h3>
+            <p className="text-white/60 text-[11px] font-black uppercase tracking-widest mt-1">Scan de IA do Dr. Viva</p>
+          </div>
+        </div>
+        <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center relative z-10 border border-white/20">
+          <Plus size={24} className="text-white" />
+        </div>
+      </button>
+
+      {/* Bento Stats Grid */}
       <div className="grid grid-cols-2 gap-4 mb-8">
         {/* Main Health Score */}
-        <div className="col-span-2 bg-kidia-green-dark rounded-[2.5rem] p-6 shadow-premium flex flex-col items-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-kidia-green-primary/20 rounded-full -mr-10 -mt-10 blur-3xl"></div>
+        <div className="col-span-2 bg-white/60 backdrop-blur-md rounded-[2.5rem] p-8 shadow-soft border border-white flex flex-col items-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-kidia-green-primary/5 rounded-full -mr-10 -mt-10 blur-3xl"></div>
           
-          <div className="relative w-40 h-40 flex items-center justify-center mb-2">
+          <div className="relative w-44 h-44 flex items-center justify-center mb-4">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.05)" strokeWidth="10" fill="transparent" />
+              <circle cx="50" cy="50" r="42" stroke="#F1F5F9" strokeWidth="10" fill="transparent" />
               <circle 
                 cx="50" cy="50" r="42" 
-                stroke="url(#gradient)" 
+                stroke="#2D6A4F" 
                 strokeWidth="10" 
                 fill="transparent" 
                 strokeDasharray="264" 
@@ -45,43 +68,39 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan }) => {
                 strokeLinecap="round" 
                 className="transition-all duration-1000 ease-out" 
               />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#2D6A4F" />
-                  <stop offset="100%" stopColor="#FFB703" />
-                </linearGradient>
-              </defs>
             </svg>
             <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-4xl font-black text-white tracking-tighter">75</span>
-              <span className="text-[10px] font-bold text-white/50 tracking-widest uppercase">Score</span>
+              <span className="text-5xl font-black text-kidia-green-dark tracking-tighter">75</span>
+              <span className="text-[10px] font-black text-kidia-grey-text tracking-[0.2em] uppercase">Saúde</span>
             </div>
           </div>
           
-          <div className="text-center relative z-10">
-            <h2 className="text-lg font-extrabold text-white">Excelente progresso!</h2>
-            <p className="text-white/60 text-xs mt-1">Sua saúde está 15% melhor que ontem.</p>
+          <div className="text-center">
+            <span className="bg-kidia-green-primary/10 text-kidia-green-primary text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-3 inline-block">Ótimo Progresso</span>
+            <p className="text-kidia-grey-text text-sm font-medium leading-relaxed">
+              Sua saúde está <span className="text-kidia-green-primary font-bold">15% melhor</span> que ontem.
+            </p>
           </div>
         </div>
 
         {/* Small Stats */}
-        <div className="bg-white rounded-3xl p-5 flex flex-col justify-between shadow-soft border border-white/50">
-          <div className="w-10 h-10 rounded-2xl bg-kidia-orange/10 flex items-center justify-center mb-3">
-            <Flame className="text-kidia-orange" size={20} fill="currentColor" />
+        <div className="bg-white/60 backdrop-blur-md rounded-[2rem] p-6 flex flex-col justify-between shadow-soft border border-white">
+          <div className="w-12 h-12 rounded-2xl bg-kidia-orange/10 flex items-center justify-center mb-4">
+            <Flame className="text-kidia-orange" size={24} fill="currentColor" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-kidia-orange uppercase tracking-wider">Ofensiva</p>
-            <p className="text-xl font-black text-kidia-green">5 Dias</p>
+            <p className="text-[10px] font-black text-kidia-grey-text uppercase tracking-widest mb-1">Ofensiva</p>
+            <p className="text-2xl font-black text-kidia-green-dark">5 Dias</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 flex flex-col justify-between shadow-soft border border-white/50">
-          <div className="w-10 h-10 rounded-2xl bg-kidia-green-primary/10 flex items-center justify-center mb-3">
-            <Star className="text-kidia-green-primary" size={20} fill="currentColor" />
+        <div className="bg-white/60 backdrop-blur-md rounded-[2rem] p-6 flex flex-col justify-between shadow-soft border border-white">
+          <div className="w-12 h-12 rounded-2xl bg-kidia-green-primary/10 flex items-center justify-center mb-4">
+            <Star className="text-kidia-green-primary" size={24} fill="currentColor" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-kidia-green-primary uppercase tracking-wider">Pontos</p>
-            <p className="text-xl font-black text-kidia-green">1,250</p>
+            <p className="text-[10px] font-black text-kidia-grey-text uppercase tracking-widest mb-1">Pontos</p>
+            <p className="text-2xl font-black text-kidia-green-dark">1,250</p>
           </div>
         </div>
       </div>
