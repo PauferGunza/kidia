@@ -131,7 +131,7 @@ export const MealPlanView: React.FC = () => {
                 <Star size={16} strokeWidth={3} fill="currentColor" className="text-yellow-500" />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-kidia-orange uppercase tracking-wider block mb-1">Sugestão da Kdia</span>
+                <span className="text-[10px] font-bold text-kidia-orange uppercase tracking-wider block mb-1">Sugestão da Kidia</span>
                 <p className="text-[13px] text-kidia-green leading-snug">"Rico em Ómega-3 para a saúde cardiovascular. O funge fornece os hidratos necessários para a saciedade."</p>
               </div>
             </div>

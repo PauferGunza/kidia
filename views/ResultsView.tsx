@@ -22,7 +22,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, imagePreview, 
         carbs: result.carbs,
         sodium: result.sodium,
         vitamins: result.vitamins,
-        kdiaAdvice: result.kdiaAdvice || '',
+        kidiaAdvice: result.kidiaAdvice || '',
       });
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
@@ -82,7 +82,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, imagePreview, 
                 <div className="bg-kidia-green-primary rounded-xl p-1.5 text-white shadow-md shadow-green-900/20">
                    <Sparkles size={20} strokeWidth={4} />
                 </div>
-                <span className="text-[11px] font-black text-kidia-green-primary uppercase tracking-[0.2em]">IA da Kdia Analisou</span>
+                <span className="text-[11px] font-black text-kidia-green-primary uppercase tracking-[0.2em]">IA da Kidia Analisou</span>
               </div>
               <h2 className="text-4xl font-black text-kidia-green-dark tracking-tighter leading-none mb-2">
                 Relatório Vital
@@ -188,11 +188,11 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, imagePreview, 
               <div>
                 <span className="font-black text-[12px] uppercase tracking-[0.3em] text-kidia-accent-yellow block mb-2">Insight Vital</span>
                 <p className="text-white text-[17px] leading-snug font-bold">
-                  {result.kdiaAdvice || `Adicione Quizaca para aumentar o teor de ferro e equilibrar os hidratos de carbono.`}
+                  {result.kidiaAdvice || `Adicione Quizaca para aumentar o teor de ferro e equilibrar os hidratos de carbono.`}
                 </p>
               </div>
               <button className="bg-white text-kidia-green-primary text-[11px] font-black uppercase tracking-widest px-8 py-3.5 rounded-2xl shadow-premium active:scale-95 transition-all">
-                Dicas da Kdia
+                Dicas da Kidia
               </button>
             </div>
           </div>

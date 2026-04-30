@@ -48,7 +48,7 @@ export const ScanningView: React.FC<ScanningViewProps> = ({ imagePreview }) => {
           </div>
           <div>
             <h3 className="text-[#1A3C28] font-bold text-[15px] leading-tight mb-0.5">Analisando Imagem...</h3>
-            <p className="text-[#6B716F] text-xs">A consultar a Inteligência Vital da Kdia</p>
+            <p className="text-[#6B716F] text-xs">A consultar a Inteligência Vital da Kidia</p>
           </div>
         </div>
 

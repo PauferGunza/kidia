@@ -18,7 +18,7 @@ export interface ScanResult {
   carbs: string;
   sodium: string;
   vitamins: string;
-  kdiaAdvice: string;
+  kidiaAdvice: string;
   safetyAlert: string;
   timestamp?: string;
 }

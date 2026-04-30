@@ -1,20 +1,39 @@
 import React, { useState } from 'react';
 import { Mail, Lock, ArrowLeft } from '../components/Icons';
 import { Logo } from '../components/Logo';
+import { db } from '../db';
 
 interface LoginViewProps {
-  onLogin: () => void;
+  onLogin: (name: string, email: string) => void;
   onGoToSignup: () => void;
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onGoToSignup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      onLogin();
+    setError('');
+
+    if (!email || !password) {
+      setError('Por favor preencha todos os campos');
+      return;
+    }
+
+    try {
+      const user = await db.users.where('email').equals(email).first();
+      
+      if (!user || user.password !== password) {
+        setError('E-mail ou palavra-passe incorretos');
+        return;
+      }
+
+      onLogin(user.name, user.email);
+    } catch (err) {
+      console.error("Login error:", err);
+      setError('Erro ao entrar. Tente novamente.');
     }
   };
 
@@ -28,27 +47,33 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onGoToSignup }) =
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-kidia-green-dark/40 via-transparent to-kidia-green-dark/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-kidia-green-dark/40"></div>
       </div>
 
-      <div className="relative z-10 flex flex-col h-full px-8 pt-20 pb-12 overflow-y-auto">
-        <div className="flex flex-col items-center mb-16">
+      <div className="relative z-10 flex flex-col h-full px-5 sm:px-8 pt-16 pb-10 overflow-y-auto">
+        <div className="flex flex-col items-center mb-10 shrink-0">
           <Logo size="xl" className="animate-float" vertical={true} />
         </div>
 
-        <div className="glass-card rounded-[3rem] p-10 shadow-premium mt-auto border-white/30">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-black text-kidia-green tracking-tight leading-tight mb-3">
+        <div className="glass-card rounded-[2.5rem] sm:rounded-[3.5rem] p-7 sm:p-10 shadow-premium border-white/40 mb-6 transition-all">
+          <div className="text-center mb-10 px-2">
+            <h1 className="text-3xl sm:text-4xl font-black text-kidia-green tracking-tight leading-tight mb-3">
               Bem-vindo
             </h1>
-            <p className="text-[17px] text-kidia-grey-text/90 leading-relaxed font-medium">
-              Entre para continuar a sua jornada de saúde com a Kdia.
+            <p className="text-[15px] sm:text-[17px] text-kidia-grey-text/90 leading-relaxed font-bold">
+              Entre para continuar a sua jornada de saúde com a Kidia.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-xs font-bold animate-shake text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-colors group-focus-within:text-kidia-green-primary">
+              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none transition-colors group-focus-within:text-kidia-green-primary">
                 <Mail size={22} className="text-kidia-grey-text/50" />
               </div>
               <input
@@ -56,13 +81,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onGoToSignup }) =
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="E-mail"
-                className="w-full pl-14 pr-4 py-5 bg-white/40 border border-white/60 rounded-3xl focus:outline-none focus:ring-2 focus:ring-kidia-green-primary/30 focus:border-kidia-green-primary/50 focus:bg-white/80 transition-all text-[16px] font-bold text-kidia-green placeholder:text-kidia-grey-text/40"
+                className="w-full pl-16 pr-4 py-6 bg-white/50 border border-white/70 rounded-3xl focus:outline-none focus:ring-4 focus:ring-kidia-green-primary/10 focus:border-kidia-green-primary/50 focus:bg-white/90 transition-all text-lg font-bold text-kidia-green placeholder:text-kidia-grey-text/40 shadow-sm"
                 required
               />
             </div>
 
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-colors group-focus-within:text-kidia-green-primary">
+              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none transition-colors group-focus-within:text-kidia-green-primary">
                 <Lock size={22} className="text-kidia-grey-text/50" />
               </div>
               <input
@@ -70,7 +95,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onGoToSignup }) =
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Palavra-passe"
-                className="w-full pl-14 pr-4 py-5 bg-white/40 border border-white/60 rounded-3xl focus:outline-none focus:ring-2 focus:ring-kidia-green-primary/30 focus:border-kidia-green-primary/50 focus:bg-white/80 transition-all text-[16px] font-bold text-kidia-green placeholder:text-kidia-grey-text/40"
+                className="w-full pl-16 pr-4 py-6 bg-white/50 border border-white/70 rounded-3xl focus:outline-none focus:ring-4 focus:ring-kidia-green-primary/10 focus:border-kidia-green-primary/50 focus:bg-white/90 transition-all text-lg font-bold text-kidia-green placeholder:text-kidia-grey-text/40 shadow-sm"
                 required
               />
             </div>

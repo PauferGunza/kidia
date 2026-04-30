@@ -1,6 +1,6 @@
 {
   "name": "KIDIA",
-  "description": "A premium health and wellness mobile app powered by Kdia's integrative medicine.",
+  "description": "A premium health and wellness mobile app powered by Kidia's integrative medicine.",
   "requestFramePermissions": [
     "camera"
   ]

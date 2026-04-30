@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Droplet, Flame, Smile, Camera, Zap, Star, Trophy, Gift, ChevronRight, CheckCircle, Plus, Utensils, Apple, Coffee } from '../components/Icons';
+import { Droplet, Flame, Smile, Camera as CameraIcon, Image as ImageIcon, Zap, Star, Trophy, Gift, ChevronRight, CheckCircle, Plus, Utensils, Apple, Coffee } from '../components/Icons';
 import { Logo } from '../components/Logo';
 import { db, HistoryItem } from '../db';
 import { UserProfile } from '../types';
 
 interface HomeViewProps {
   onTriggerScan: () => void;
+  onTriggerCamera: () => void;
+  onTriggerGallery: () => void;
   profile: UserProfile;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) => {
+export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, onTriggerCamera, onTriggerGallery, profile }) => {
   const [activeTab, setActiveTab] = useState<'diarias' | 'semanais' | 'mensais'>('diarias');
   const [lastScan, setLastScan] = useState<HistoryItem | null>(null);
   const [todayCalories, setTodayCalories] = useState(0);
+  const [completedGoals, setCompletedGoals] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,9 +40,27 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) =>
       }, 0);
 
       setTodayCalories(totalCals);
+
+      // Load completed goals for today
+      const todayStr = today.toISOString().split('T')[0];
+      const items = await db.goals.where('date').equals(todayStr).toArray();
+      const goalsMap: Record<string, boolean> = {};
+      items.forEach(item => {
+        goalsMap[item.id] = item.completed;
+      });
+      setCompletedGoals(goalsMap);
     };
     fetchData();
   }, []);
+
+  const toggleGoal = async (id: string) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const newState = !completedGoals[id];
+    
+    setCompletedGoals(prev => ({ ...prev, [id]: newState }));
+    
+    await db.goals.put({ id, completed: newState, date: todayStr });
+  };
 
   const getRecommendations = () => {
     const recs = [];
@@ -130,8 +151,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) =>
         <Logo size="md" />
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-[11px] font-black text-kidia-orange uppercase tracking-[0.2em] leading-none mb-1.5">Nível 5</p>
-            <p className="text-base font-black text-kidia-green-dark">{profile.name || 'Utilizador'}</p>
+            <p className="text-base font-black text-kidia-green-dark">{profile.name || 'Bem-vindo'}</p>
+            <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest leading-none mt-1">Plano Ativo</p>
           </div>
         </div>
       </div>
@@ -172,26 +193,38 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) =>
       </div>
 
       {/* Primary Action: QR/Camera Scanner */}
-      <div className="relative group px-1">
-        <div className="absolute -inset-1 bg-gradient-to-r from-kidia-green-primary to-kidia-orange rounded-[3rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-        <button 
-          onClick={onTriggerScan}
-          className="relative w-full bg-kidia-green-primary rounded-[2.8rem] p-7 flex items-center justify-between shadow-premium active:scale-[0.98] transition-all overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-          <div className="flex items-center gap-6 relative z-10">
-            <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
-              <Camera size={32} className="text-white" strokeWidth={2.5} />
+      <div className="grid grid-cols-2 gap-4 px-1">
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-kidia-green-primary to-emerald-400 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+          <button 
+            onClick={onTriggerCamera}
+            className="relative w-full bg-kidia-green-primary rounded-[2.3rem] p-6 flex flex-col items-center gap-4 shadow-premium active:scale-[0.98] transition-all overflow-hidden border border-white/20"
+          >
+            <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
+              <CameraIcon size={28} className="text-white" strokeWidth={2.5} />
             </div>
-            <div className="text-left">
-              <h3 className="text-white font-black text-xl tracking-tight">Analisar Refeição</h3>
-              <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest mt-1">IA da Kdia</p>
+            <div className="text-center">
+              <h3 className="text-white font-black text-base tracking-tight leading-none mb-1">Tirar Foto</h3>
+              <p className="text-white/60 text-[9px] font-black uppercase tracking-widest">Câmara</p>
             </div>
-          </div>
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center relative z-10 border border-white/30">
-            <Plus size={20} className="text-white" />
-          </div>
-        </button>
+          </button>
+        </div>
+
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-kidia-orange to-kidia-accent-yellow rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+          <button 
+            onClick={onTriggerGallery}
+            className="relative w-full bg-white rounded-[2.3rem] p-6 flex flex-col items-center gap-4 shadow-premium active:scale-[0.98] transition-all overflow-hidden border border-gray-100"
+          >
+            <div className="w-14 h-14 bg-kidia-orange/10 rounded-2xl flex items-center justify-center">
+              <ImageIcon size={28} className="text-kidia-orange" strokeWidth={2.5} />
+            </div>
+            <div className="text-center">
+              <h3 className="text-kidia-green-dark font-black text-base tracking-tight leading-none mb-1">Galeria</h3>
+              <p className="text-kidia-grey-text text-[9px] font-black uppercase tracking-widest">Carregar</p>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Last Scan Result */}
@@ -248,7 +281,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) =>
               <Zap className="text-kidia-accent-yellow" size={28} fill="currentColor" />
             </div>
             <div>
-              <span className="text-[10px] font-bold text-kidia-accent-yellow uppercase tracking-widest block mb-2">Insight Vital da Kdia</span>
+              <span className="text-[10px] font-bold text-kidia-accent-yellow uppercase tracking-widest block mb-2">Insight Vital da Kidia</span>
               <p className="text-white text-base leading-relaxed font-bold">
                 "Beber um copo de água morna com limão em jejum ajuda a preparar o estômago para a digestão do dia."
               </p>
@@ -284,37 +317,44 @@ export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) =>
         <div className="space-y-5">
           {activeTab === 'diarias' && (
             <>
-              <div className="bg-white rounded-3xl p-6 shadow-soft border border-gray-50 flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-kidia-green-primary/10 flex items-center justify-center shrink-0">
-                  <CheckCircle className="text-kidia-green-primary" size={28} fill="currentColor" />
+              <button 
+                onClick={() => toggleGoal('water')}
+                className={`w-full text-left bg-white rounded-3xl p-6 shadow-soft border border-gray-50 flex items-center gap-5 transition-all active:scale-[0.98] ${completedGoals['water'] ? 'opacity-60 grayscale-[0.5]' : ''}`}
+              >
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${completedGoals['water'] ? 'bg-kidia-green-primary text-white' : 'bg-kidia-green-primary/10 text-kidia-green-primary'}`}>
+                  <CheckCircle size={28} fill={completedGoals['water'] ? 'white' : 'currentColor'} />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="font-black text-kidia-green-dark text-base">Beber 2L de água</h3>
+                    <h3 className={`font-black text-kidia-green-dark text-base ${completedGoals['water'] ? 'line-through' : ''}`}>Beber 2L de água</h3>
                     <span className="text-[10px] font-black text-kidia-green-primary">+50 pts</span>
                   </div>
                   <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-kidia-green-primary h-full w-full rounded-full"></div>
+                    <div className={`bg-kidia-green-primary h-full rounded-full transition-all duration-500`} style={{ width: completedGoals['water'] ? '100%' : '50%' }}></div>
                   </div>
                 </div>
-              </div>
+              </button>
 
-              <div className="bg-white rounded-3xl p-6 shadow-soft border border-gray-50 flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-kidia-orange/10 flex items-center justify-center shrink-0">
-                  <Camera className="text-kidia-orange" size={28} />
+              <div 
+                className={`bg-white rounded-3xl p-6 shadow-soft border border-gray-50 flex items-center gap-5 transition-all ${completedGoals['scan'] ? 'opacity-60 grayscale-[0.5]' : ''}`}
+              >
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${completedGoals['scan'] ? 'bg-kidia-orange text-white' : 'bg-kidia-orange/10 text-kidia-orange'}`}>
+                  <CameraIcon size={28} />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="font-black text-kidia-green-dark text-base">Escanear 1 refeição</h3>
+                    <h3 className={`font-black text-kidia-green-dark text-base ${completedGoals['scan'] ? 'line-through' : ''}`}>Escanear 1 refeição</h3>
                     <span className="text-[10px] font-black text-kidia-orange">+100 pts</span>
                   </div>
                   <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-kidia-orange h-full w-0 rounded-full"></div>
+                    <div className={`bg-kidia-orange h-full rounded-full transition-all duration-500`} style={{ width: completedGoals['scan'] ? '100%' : '0%' }}></div>
                   </div>
                 </div>
-                <button onClick={onTriggerScan} className="bg-kidia-orange text-white text-[11px] font-black tracking-widest uppercase px-5 py-2.5 rounded-xl shadow-lg shadow-orange-200 active:scale-95 transition-all">
-                  Fazer
-                </button>
+                {!completedGoals['scan'] && (
+                  <button onClick={onTriggerScan} className="bg-kidia-orange text-white text-[11px] font-black tracking-widest uppercase px-5 py-2.5 rounded-xl shadow-lg shadow-orange-200 active:scale-95 transition-all">
+                    Fazer
+                  </button>
+                )}
               </div>
             </>
           )}

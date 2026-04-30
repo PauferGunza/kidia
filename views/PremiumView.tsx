@@ -36,7 +36,7 @@ export const PremiumView: React.FC<PremiumViewProps> = ({ onBack }) => {
           </div>
           <h1 className="text-3xl font-black text-white mb-2 tracking-tight">Desbloqueie o seu<br/>Potencial Máximo</h1>
           <p className="text-white/70 text-sm max-w-[280px] mx-auto">
-            Acesso ilimitado à inteligência artificial da Kdia e planos alimentares personalizados.
+            Acesso ilimitado à inteligência artificial da Kidia e planos alimentares personalizados.
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export const PremiumView: React.FC<PremiumViewProps> = ({ onBack }) => {
             </div>
             <div>
               <h3 className="text-white font-bold text-[15px] mb-0.5">Chat Direto com IA</h3>
-              <p className="text-white/60 text-xs leading-relaxed">Tire dúvidas de saúde 24/7 com a IA treinada pela Kdia.</p>
+              <p className="text-white/60 text-xs leading-relaxed">Tire dúvidas de saúde 24/7 com a IA treinada pela Kidia.</p>
             </div>
           </div>
         </div>

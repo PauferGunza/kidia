@@ -12,13 +12,13 @@ export const analyzeImage = async (
 
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-  const systemInstruction = `Tu és a Kdia, a IA oficial da plataforma KIDIA, especialista em nutrição integrativa e fitoterapia angolana.
+  const systemInstruction = `Tu és a Kidia, a IA oficial da plataforma KIDIA, especialista em nutrição integrativa e fitoterapia angolana.
 TUA MISSÃO: Analisar fotos de alimentos angolanos (Funge, Calulu, Muzongué, etc.) e plantas medicinais angolanas (Mwanza, Mutamba, etc.) com precisão científica e empatia.
 
 REGRAS DE ANÁLISE (MODO SAÚDE):
 1. Identificação: Identifica exatamente o que está na foto.
 2. Valores Nutricionais: Estima calorias, carboidratos e sódio. Classifica o "Impacto Glicémico" como "Baixo", "Médio", "Alto" (ou "N/A" para plantas não consumíveis).
-3. Visão Kdia: Explica os benefícios biológicos e tradicionais de forma profissional e acolhedora.
+3. Visão Kidia: Explica os benefícios biológicos e tradicionais de forma profissional e acolhedora.
 
 ALERTAS DE SEGURANÇA (OBRIGATÓRIO):
 - Baseado no Perfil do Utilizador abaixo, alerta se houver interações perigosas ou contraindicações para os objetivos e condições do usuário.
@@ -44,10 +44,10 @@ Retorne APENAS um objeto JSON válido.`;
       carbs: { type: Type.STRING, description: "Ex: '45g' ou 'N/A'" },
       sodium: { type: Type.STRING, description: "Ex: '150mg' ou 'N/A'" },
       vitamins: { type: Type.STRING, description: "Principais vitaminas/minerais presentes" },
-      kdiaAdvice: { type: Type.STRING, description: "Conselho integrativo e cultural da Kdia" },
+      kidiaAdvice: { type: Type.STRING, description: "Conselho integrativo e cultural da Kidia" },
       safetyAlert: { type: Type.STRING, description: "Aviso de segurança personalizado. Vazio se não houver perigo." }
     },
-    required: ["itemName", "isFood", "calories", "glycemicImpact", "carbs", "sodium", "vitamins", "kdiaAdvice", "safetyAlert"]
+    required: ["itemName", "isFood", "calories", "glycemicImpact", "carbs", "sodium", "vitamins", "kidiaAdvice", "safetyAlert"]
   };
 
   try {
@@ -61,7 +61,7 @@ Retorne APENAS um objeto JSON válido.`;
           },
         },
         {
-          text: "Análise nutricional e botânica Kdia. Retorne em JSON.",
+          text: "Análise nutricional e botânica Kidia. Retorne em JSON.",
         },
       ],
       config: {
@@ -74,7 +74,7 @@ Retorne APENAS um objeto JSON válido.`;
 
     const text = response.text;
     if (!text) {
-      throw new Error("Received empty response from Kdia AI.");
+      throw new Error("Received empty response from Kidia AI.");
     }
 
     const result = JSON.parse(text) as ScanResult;

@@ -1,5 +1,6 @@
 import { 
   Camera, 
+  Image,
   Leaf, 
   Apple,
   Coffee,
@@ -60,6 +61,7 @@ import {
 
 export {
   Camera,
+  Image,
   Leaf,
   Apple,
   Coffee,

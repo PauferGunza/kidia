@@ -9,18 +9,22 @@ export interface HistoryItem {
   carbs: string;
   sodium: string;
   vitamins: string;
-  kdiaAdvice?: string;
+  kidiaAdvice?: string;
 }
 
 export class KidiaDatabase extends Dexie {
   history!: Table<HistoryItem, number>;
   profile!: Table<UserProfile, number>;
+  users!: Table<{ id?: number; email: string; password: string; name: string }, number>;
+  goals!: Table<{ id: string; completed: boolean; date: string }, string>;
 
   constructor() {
     super('KidiaDB');
-    this.version(1).stores({
+    this.version(3).stores({
       history: '++id, date, itemName',
-      profile: '++id' // Just to store a single profile record
+      profile: '++id, email',
+      users: '++id, &email',
+      goals: 'id, date'
     });
   }
 }

@@ -121,7 +121,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             Personalize a sua <span className="text-kidia-green-primary">Saúde</span>
           </h1>
           <p className="text-[17px] text-kidia-grey-text leading-relaxed px-2 font-medium">
-            Selecione as suas condições para receber conselhos exclusivos da Kdia.
+            Selecione as suas condições para receber conselhos exclusivos da Kidia.
           </p>
         </div>
       )}
@@ -140,7 +140,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </div>
               <div className="text-left">
                 <h3 className="text-white font-black text-[20px] tracking-tight">Kidia Premium</h3>
-                <p className="text-white/60 text-[11px] font-black uppercase tracking-widest mt-1">Acesso Total à Kdia</p>
+                <p className="text-white/60 text-[11px] font-black uppercase tracking-widest mt-1">Acesso Total à Kidia</p>
               </div>
             </div>
             <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center relative z-10 border border-white/20 group-hover:bg-white/20 transition-all">

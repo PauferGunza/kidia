@@ -20,7 +20,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ profile, onBack }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: `Olá, ${profile.name || 'amigo'}! Sou o Kdia, seu assistente de saúde. Como posso ajudar na sua jornada hoje?`,
+      text: `Olá, ${profile.name || 'amigo'}! Sou o Kidia, seu assistente de saúde. Como posso ajudar na sua jornada hoje?`,
       sender: 'ai'
     }
   ]);
@@ -39,7 +39,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ profile, onBack }) => {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const systemInstruction = `Tu és o Kdia, um assistente virtual de saúde altamente profissional, especialista em medicina integrativa e nutrição.
+    const systemInstruction = `Tu és o Kidia, um assistente virtual de saúde altamente profissional, especialista em medicina integrativa e nutrição.
 O utilizador com quem estás a falar chama-se ${profile.name || 'Amigo'}.
 Perfil de saúde do utilizador:
 - Diabético: ${profile.diabetes ? 'Sim' : 'Não'}
@@ -137,7 +137,7 @@ Responde sempre de forma acolhedora, mas extremamente profissional e técnica, f
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <h1 className="text-lg font-extrabold text-kidia-green tracking-tight">Kdia</h1>
+            <h1 className="text-lg font-extrabold text-kidia-green tracking-tight">Kidia</h1>
           </div>
           <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest">Assistente de Saúde</p>
         </div>
@@ -165,7 +165,7 @@ Responde sempre de forma acolhedora, mas extremamente profissional e técnica, f
                 )}
               </div>
               <span className="text-[10px] font-bold text-kidia-grey-text mt-2 px-2 uppercase tracking-widest">
-                {msg.sender === 'ai' ? 'Kdia' : 'Tu'}
+                {msg.sender === 'ai' ? 'Kidia' : 'Tu'}
               </span>
             </div>
           </div>
@@ -195,7 +195,7 @@ Responde sempre de forma acolhedora, mas extremamente profissional e técnica, f
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isListening ? "A ouvir..." : "Pergunte ao Kdia..."}
+            placeholder={isListening ? "A ouvir..." : "Pergunte ao Kidia..."}
             className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[48px] py-3.5 px-2 text-[15px] text-kidia-green font-medium placeholder:text-gray-400"
             rows={1}
           />
