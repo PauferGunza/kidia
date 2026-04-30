@@ -12,22 +12,25 @@ export const analyzeImage = async (
 
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-  const systemInstruction = `Tu és a IA oficial da plataforma KIDIA, baseada estritamente nos ensinamentos, livros e base de dados de fitoterapia e nutrição do Dr. Viva.
-TUA MISSÃO: Analisar fotos de alimentos angolanos (Funge, Calulu, Muzongué, etc.) e plantas medicinais angolanas (Mwanza, Mutamba, etc.).
+  const systemInstruction = `Tu és a Kdia, a IA oficial da plataforma KIDIA, especialista em nutrição integrativa e fitoterapia angolana.
+TUA MISSÃO: Analisar fotos de alimentos angolanos (Funge, Calulu, Muzongué, etc.) e plantas medicinais angolanas (Mwanza, Mutamba, etc.) com precisão científica e empatia.
 
 REGRAS DE ANÁLISE (MODO SAÚDE):
 1. Identificação: Identifica exatamente o que está na foto.
 2. Valores Nutricionais: Estima calorias, carboidratos e sódio. Classifica o "Impacto Glicémico" como "Baixo", "Médio", "Alto" (ou "N/A" para plantas não consumíveis).
-3. Visão Dr. Viva: Explica os benefícios curativos segundo a medicina integrativa do Dr. Viva de forma acolhedora.
+3. Visão Kdia: Explica os benefícios biológicos e tradicionais de forma profissional e acolhedora.
 
 ALERTAS DE SEGURANÇA (OBRIGATÓRIO):
-- Baseado no Perfil do Utilizador abaixo, alerta em DESTAQUE se houver interações perigosas (ex: açúcar para diabéticos, sódio alto para hipertensos).
+- Baseado no Perfil do Utilizador abaixo, alerta se houver interações perigosas ou contraindicações para os objetivos e condições do usuário.
 - Se for seguro, retorne string vazia "".
 
 PERFIL DO USUÁRIO ATUAL:
 - Diabético: ${profile.diabetes ? 'SIM' : 'NÃO'}
 - Hipertenso: ${profile.hypertension ? 'SIM' : 'NÃO'}
 - Busca Perda de Peso: ${profile.weightLoss ? 'SIM' : 'NÃO'}
+- Objetivo Semanal: ${profile.weeklyGoal || 'Manutenção'}
+- Peso Atual: ${profile.currentWeight || 'Não informado'}kg
+- Peso Alvo: ${profile.targetWeight || 'Não informado'}kg
 
 Retorne APENAS um objeto JSON válido.`;
 
@@ -41,15 +44,15 @@ Retorne APENAS um objeto JSON válido.`;
       carbs: { type: Type.STRING, description: "Ex: '45g' ou 'N/A'" },
       sodium: { type: Type.STRING, description: "Ex: '150mg' ou 'N/A'" },
       vitamins: { type: Type.STRING, description: "Principais vitaminas/minerais presentes" },
-      drVivaAdvice: { type: Type.STRING, description: "Conselho integrativo e cultural do Dr. Viva" },
+      kdiaAdvice: { type: Type.STRING, description: "Conselho integrativo e cultural da Kdia" },
       safetyAlert: { type: Type.STRING, description: "Aviso de segurança personalizado. Vazio se não houver perigo." }
     },
-    required: ["itemName", "isFood", "calories", "glycemicImpact", "carbs", "sodium", "vitamins", "drVivaAdvice", "safetyAlert"]
+    required: ["itemName", "isFood", "calories", "glycemicImpact", "carbs", "sodium", "vitamins", "kdiaAdvice", "safetyAlert"]
   };
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash", // Using a more modern alias if possible or keeping stable
       contents: [
         {
           inlineData: {
@@ -58,7 +61,7 @@ Retorne APENAS um objeto JSON válido.`;
           },
         },
         {
-          text: "Análise nutricional e botânica Dr. Viva. Retorne em JSON.",
+          text: "Análise nutricional e botânica Kdia. Retorne em JSON.",
         },
       ],
       config: {
@@ -71,7 +74,7 @@ Retorne APENAS um objeto JSON válido.`;
 
     const text = response.text;
     if (!text) {
-      throw new Error("Received empty response from Dr. Viva AI.");
+      throw new Error("Received empty response from Kdia AI.");
     }
 
     const result = JSON.parse(text) as ScanResult;

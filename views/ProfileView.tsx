@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserProfile } from '../types';
-import { ArrowLeft, Droplet, Activity, Minus, Star, ChevronRight, LogOut, Edit2 } from '../components/Icons';
+import { ArrowLeft, Droplet, Activity, Minus, Star, ChevronRight, LogOut, Edit2, Settings as SettingsIcon, Camera, Target, TrendingUp, Shield, Scale, ChevronLeft } from '../components/Icons';
 import { Logo } from '../components/Logo';
 
 interface ProfileViewProps {
@@ -9,11 +9,25 @@ interface ProfileViewProps {
   onComplete?: () => void;
   isOnboarding?: boolean;
   onGoPremium?: () => void;
+  onGoSettings: () => void;
+  onBack?: () => void;
   onLogout?: () => void;
 }
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfile, onComplete, isOnboarding = false, onGoPremium, onLogout }) => {
+export const ProfileView: React.FC<ProfileViewProps> = ({ 
+  profile, 
+  onUpdateProfile, 
+  onComplete, 
+  isOnboarding = false, 
+  onGoPremium, 
+  onLogout,
+  onGoSettings,
+  onBack
+}) => {
   
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempName, setTempName] = useState(profile.name);
+
   const GoalCard = ({ icon: Icon, title, desc, isActive, toggleKey, showPlus = false }: any) => (
     <button 
       onClick={() => onUpdateProfile({ [toggleKey]: !profile[toggleKey as keyof UserProfile] })}
@@ -63,43 +77,41 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfi
     <div className="flex-1 flex flex-col bg-mesh h-full overflow-y-auto pb-32">
       
       {/* Top Bar */}
-      <div className="px-6 py-10 flex items-center justify-between sticky top-0 z-20">
-        <button 
-          onClick={isOnboarding ? undefined : onLogout}
-          className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-kidia-green-dark shadow-soft border border-white active:scale-90 transition-all"
-        >
-          {isOnboarding ? <ArrowLeft size={22} strokeWidth={2.5} /> : <LogOut size={22} strokeWidth={2} />}
-        </button>
+      <div className="px-6 py-10 flex items-center justify-between sticky top-0 z-20 bg-white/10 backdrop-blur-md">
+        <div className="w-12 h-12">
+          {!isOnboarding && onBack && (
+            <button 
+              onClick={onBack}
+              className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-kidia-green-dark shadow-soft border border-gray-100"
+            >
+              <ChevronLeft size={22} strokeWidth={2.5} />
+            </button>
+          )}
+        </div>
         
         {isOnboarding ? (
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-2 rounded-full bg-kidia-orange shadow-sm shadow-orange-200"></div>
-            <div className="w-2 h-2 rounded-full bg-white border border-gray-100"></div>
-            <div className="w-2 h-2 rounded-full bg-white border border-gray-100"></div>
-          </div>
-        ) : (
           <Logo size="sm" showText={false} />
+        ) : (
+          <h1 className="text-xl font-black text-kidia-green-dark">Perfil</h1>
         )}
 
-        <button className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-kidia-green-dark shadow-soft border border-white active:scale-90 transition-all">
-          <Edit2 size={22} strokeWidth={2} />
+        <button 
+          onClick={onGoSettings}
+          className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-kidia-green-dark shadow-soft border border-gray-100"
+        >
+          <SettingsIcon size={22} strokeWidth={2} />
         </button>
       </div>
 
       {!isOnboarding && (
         <div className="px-6 flex flex-col items-center mb-10 pt-4">
-          <div className="relative mb-6">
-            <div className="w-32 h-32 bg-white/90 backdrop-blur-md rounded-[2.8rem] flex items-center justify-center relative shadow-premium border border-white">
-              <div className="w-28 h-28 bg-kidia-green-primary/5 rounded-[2.5rem] flex items-center justify-center relative overflow-hidden">
-                <span className="text-5xl font-black text-kidia-green-primary">{profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}</span>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-kidia-orange rounded-2xl border-4 border-white flex items-center justify-center shadow-premium transform rotate-6 animate-float">
-              <Star size={20} className="text-white" fill="currentColor" />
+          <div className="text-center">
+            <h2 className="text-4xl font-black text-kidia-green-dark mb-2 tracking-tight">{profile.name || 'Utilizador'}</h2>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-[11px] font-black text-kidia-green-primary uppercase tracking-[0.2em] bg-white px-4 py-1.5 rounded-full border border-gray-100 shadow-sm">Membro Nível 5</span>
+              <span className="text-[11px] font-bold text-kidia-grey-text uppercase tracking-widest">{profile.email}</span>
             </div>
           </div>
-          <h2 className="text-3xl font-black text-kidia-green-dark mb-1 tracking-tight">{profile.name || 'Utilizador'}</h2>
-          <p className="text-sm font-bold text-kidia-grey-text uppercase tracking-widest bg-white/50 px-4 py-1.5 rounded-full border border-white">{profile.email || 'utilizador@kidia.ao'}</p>
         </div>
       )}
 
@@ -109,7 +121,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfi
             Personalize a sua <span className="text-kidia-green-primary">Saúde</span>
           </h1>
           <p className="text-[17px] text-kidia-grey-text leading-relaxed px-2 font-medium">
-            Selecione as suas condições para receber conselhos exclusivos do Dr. Viva.
+            Selecione as suas condições para receber conselhos exclusivos da Kdia.
           </p>
         </div>
       )}
@@ -128,7 +140,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfi
               </div>
               <div className="text-left">
                 <h3 className="text-white font-black text-[20px] tracking-tight">Kidia Premium</h3>
-                <p className="text-white/60 text-[11px] font-black uppercase tracking-widest mt-1">Acesso Total ao Dr. Viva</p>
+                <p className="text-white/60 text-[11px] font-black uppercase tracking-widest mt-1">Acesso Total à Kdia</p>
               </div>
             </div>
             <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center relative z-10 border border-white/20 group-hover:bg-white/20 transition-all">
@@ -164,17 +176,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ profile, onUpdateProfi
           />
         </div>
 
-        {!isOnboarding && onLogout && (
-          <div className="pt-12 pb-8">
-            <button 
-              onClick={onLogout}
-              className="w-full flex items-center justify-center gap-3 text-kidia-accent-red font-black py-6 rounded-[2.5rem] bg-kidia-accent-red/5 border border-kidia-accent-red/10 active:scale-[0.98] transition-all hover:bg-kidia-accent-red/10"
-            >
-              <LogOut size={22} />
-              <span className="uppercase tracking-[0.15em] text-xs">Terminar Sessão</span>
-            </button>
-          </div>
-        )}
       </div>
 
       {isOnboarding && (

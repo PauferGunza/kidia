@@ -4,19 +4,19 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
   
-  --color-kidia-green: #1A3C28;
-  --color-kidia-green-primary: #2D6A4F;
-  --color-kidia-green-dark: #081C15;
-  --color-kidia-green-light: #D8F3DC;
-  --color-kidia-orange: #C26E28;
-  --color-kidia-orange-light: #F4EAE1;
-  --color-kidia-bg: #F9F7F2;
-  --color-kidia-grey-text: #6B7280;
-  --color-kidia-accent-yellow: #FFB703;
-  --color-kidia-accent-red: #E63946;
+  --color-kidia-green: #062115;
+  --color-kidia-green-primary: #1E4D3B;
+  --color-kidia-green-dark: #03100A;
+  --color-kidia-green-light: #EBF5F0;
+  --color-kidia-orange: #F97316;
+  --color-kidia-orange-light: #FFF5ED;
+  --color-kidia-bg: #FCFAF7;
+  --color-kidia-grey-text: #52625B;
+  --color-kidia-accent-yellow: #FBBF24;
+  --color-kidia-accent-red: #EF4444;
 
-  --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-  --shadow-premium: 0 20px 40px -10px rgba(26, 60, 40, 0.12);
+  --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  --shadow-premium: 0 25px 50px -12px rgba(6, 33, 21, 0.08);
 }
 
 @layer base {
@@ -28,18 +28,18 @@
 
 @layer utilities {
   .bg-mesh {
-    background-color: #F9F7F2;
+    background-color: #FCFAF7;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(45, 106, 79, 0.08) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(194, 110, 40, 0.08) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(30, 77, 59, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(249, 115, 22, 0.05) 0px, transparent 50%);
   }
 
   .glass-card {
-    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+    @apply bg-white/70 backdrop-blur-2xl border border-white/40;
   }
 
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 4s ease-in-out infinite;
   }
 }
 

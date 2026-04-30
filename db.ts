@@ -9,6 +9,7 @@ export interface HistoryItem {
   carbs: string;
   sodium: string;
   vitamins: string;
+  kdiaAdvice?: string;
 }
 
 export class KidiaDatabase extends Dexie {

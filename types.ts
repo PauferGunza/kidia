@@ -4,6 +4,9 @@ export interface UserProfile {
   diabetes: boolean;
   hypertension: boolean;
   weightLoss: boolean;
+  weeklyGoal?: 'lose' | 'gain' | 'maintain' | 'control';
+  targetWeight?: number;
+  currentWeight?: number;
 }
 
 export interface ScanResult {
@@ -14,8 +17,9 @@ export interface ScanResult {
   carbs: string;
   sodium: string;
   vitamins: string;
-  drVivaAdvice: string;
+  kdiaAdvice: string;
   safetyAlert: string;
+  timestamp?: string;
 }
 
-export type AppView = 'login' | 'signup' | 'dashboard' | 'mealplan' | 'history' | 'profile' | 'scanning' | 'results' | 'premium' | 'chat';
+export type AppView = 'login' | 'signup' | 'dashboard' | 'mealplan' | 'history' | 'profile' | 'settings' | 'scanning' | 'results' | 'premium' | 'chat';

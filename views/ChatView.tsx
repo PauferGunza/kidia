@@ -20,7 +20,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ profile, onBack }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: `Olá, ${profile.name || 'amigo'}! Sou o Dr. Viva. Como posso ajudar com a sua saúde hoje?`,
+      text: `Olá, ${profile.name || 'amigo'}! Sou o Kdia, seu assistente de saúde. Como posso ajudar na sua jornada hoje?`,
       sender: 'ai'
     }
   ]);
@@ -39,14 +39,15 @@ export const ChatView: React.FC<ChatViewProps> = ({ profile, onBack }) => {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const systemInstruction = `Tu és o Dr. Viva, um especialista em medicina integrativa, fitoterapia e nutrição de Angola.
+    const systemInstruction = `Tu és o Kdia, um assistente virtual de saúde altamente profissional, especialista em medicina integrativa e nutrição.
 O utilizador com quem estás a falar chama-se ${profile.name || 'Amigo'}.
 Perfil de saúde do utilizador:
 - Diabético: ${profile.diabetes ? 'Sim' : 'Não'}
 - Hipertenso: ${profile.hypertension ? 'Sim' : 'Não'}
 - Quer emagrecer: ${profile.weightLoss ? 'Sim' : 'Não'}
+- Objetivo Semanal: ${profile.weeklyGoal || 'Não definido'}
 
-Responde sempre de forma acolhedora, profissional e com foco na realidade angolana. Usa termos simples se necessário. Dá conselhos personalizados baseados no perfil de saúde do utilizador.`;
+Responde sempre de forma acolhedora, mas extremamente profissional e técnica, focada no bem-estar e na realidade de saúde do utilizador. Não uses avatares infantis. Dá conselhos personalizados baseados no perfil de saúde e objetivos.`;
 
     chatRef.current = ai.chats.create({
       model: "gemini-3-flash-preview",
@@ -136,9 +137,9 @@ Responde sempre de forma acolhedora, profissional e com foco na realidade angola
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <h1 className="text-lg font-extrabold text-kidia-green tracking-tight">Dr. Viva</h1>
+            <h1 className="text-lg font-extrabold text-kidia-green tracking-tight">Kdia</h1>
           </div>
-          <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest">Online agora</p>
+          <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest">Assistente de Saúde</p>
         </div>
         <Logo size="sm" showText={false} />
       </div>
@@ -164,7 +165,7 @@ Responde sempre de forma acolhedora, profissional e com foco na realidade angola
                 )}
               </div>
               <span className="text-[10px] font-bold text-kidia-grey-text mt-2 px-2 uppercase tracking-widest">
-                {msg.sender === 'ai' ? 'Dr. Viva' : 'Tu'}
+                {msg.sender === 'ai' ? 'Kdia' : 'Tu'}
               </span>
             </div>
           </div>
@@ -194,7 +195,7 @@ Responde sempre de forma acolhedora, profissional e com foco na realidade angola
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isListening ? "A ouvir..." : "Pergunte ao Dr. Viva..."}
+            placeholder={isListening ? "A ouvir..." : "Pergunte ao Kdia..."}
             className="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[48px] py-3.5 px-2 text-[15px] text-kidia-green font-medium placeholder:text-gray-400"
             rows={1}
           />

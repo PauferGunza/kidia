@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Droplet, Flame, Smile, Camera, Zap, Star, Trophy, Gift, ChevronRight, CheckCircle, Plus } from '../components/Icons';
+import React, { useState, useEffect } from 'react';
+import { Droplet, Flame, Smile, Camera, Zap, Star, Trophy, Gift, ChevronRight, CheckCircle, Plus, Utensils, Apple, Coffee } from '../components/Icons';
 import { Logo } from '../components/Logo';
-
+import { db, HistoryItem } from '../db';
 import { UserProfile } from '../types';
 
 interface HomeViewProps {
@@ -11,110 +11,191 @@ interface HomeViewProps {
 
 export const HomeView: React.FC<HomeViewProps> = ({ onTriggerScan, profile }) => {
   const [activeTab, setActiveTab] = useState<'diarias' | 'semanais' | 'mensais'>('diarias');
+  const [lastScan, setLastScan] = useState<HistoryItem | null>(null);
+
+  useEffect(() => {
+    const fetchLastScan = async () => {
+      const history = await db.history.orderBy('id').reverse().limit(1).toArray();
+      if (history.length > 0) {
+        setLastScan(history[0]);
+      }
+    };
+    fetchLastScan();
+  }, []);
+
+  const getRecommendations = () => {
+    const recs = [];
+    if (profile.diabetes) {
+      recs.push({
+        type: 'dieta',
+        title: 'Controlo Glicémico',
+        desc: 'Priorize fibras e grãos integrais para evitar picos.',
+        icon: Utensils,
+        color: 'text-blue-500',
+        bg: 'bg-blue-50'
+      });
+      recs.push({
+        type: 'fruta',
+        title: 'Mirtilos e Maçãs',
+        desc: 'Baixo índice glicémico e ricas em antioxidantes.',
+        icon: Apple,
+        color: 'text-purple-500',
+        bg: 'bg-purple-50'
+      });
+    }
+    if (profile.hypertension) {
+      recs.push({
+        type: 'dieta',
+        title: 'Dieta DASH',
+        desc: 'Focada na redução de sódio e rica em potássio.',
+        icon: Utensils,
+        color: 'text-red-500',
+        bg: 'bg-red-50'
+      });
+      recs.push({
+        type: 'fruta',
+        title: 'Bananas e Melão',
+        desc: 'Ricas em potássio, excelente para regular a tensão.',
+        icon: Apple,
+        color: 'text-yellow-500',
+        bg: 'bg-yellow-50'
+      });
+    }
+    if (profile.weightLoss) {
+      recs.push({
+        type: 'dieta',
+        title: 'Proteína Moderada',
+        desc: 'Aumente a saciedade mantendo o défice calórico.',
+        icon: Utensils,
+        color: 'text-green-500',
+        bg: 'bg-green-50'
+      });
+      recs.push({
+        type: 'receta',
+        title: 'Smoothie de Abacate',
+        desc: 'Gorduras boas que mantêm a energia estável.',
+        icon: Coffee,
+        color: 'text-emerald-500',
+        bg: 'bg-emerald-50'
+      });
+    }
+    
+    // Default recommendations if no profile specifics
+    if (recs.length === 0) {
+      recs.push({
+        type: 'dieta',
+        title: 'Equilíbrio Vital',
+        desc: 'Uma mistura variada de macronutrientes para energia.',
+        icon: Utensils,
+        color: 'text-kidia-green-primary',
+        bg: 'bg-kidia-green-primary/10'
+      });
+      recs.push({
+        type: 'fruta',
+        title: 'Mix Tropical',
+        desc: 'Manga e Papaya para digestão e vitamina C.',
+        icon: Apple,
+        color: 'text-kidia-orange',
+        bg: 'bg-kidia-orange/10'
+      });
+    }
+    return recs;
+  };
+
+  const recommendations = getRecommendations();
 
   return (
     <div className="flex-1 flex flex-col px-6 pt-12 pb-32 overflow-y-auto bg-mesh">
       
       {/* Top Header */}
-      <div className="flex justify-between items-center mb-8">
-        <Logo size="sm" />
-        <div className="flex items-center gap-3">
+      <div className="flex justify-between items-center mb-10">
+        <Logo size="md" />
+        <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-bold text-kidia-grey-text uppercase tracking-widest leading-none mb-1">Nível 5</p>
-            <p className="text-sm font-black text-kidia-green-dark">{profile.name || 'Utilizador'}</p>
-          </div>
-          <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-[0_8px_20px_-5px_rgba(0,0,0,0.1)] border-2 border-white bg-white flex items-center justify-center">
-            <span className="text-xl font-black text-kidia-green-primary">{profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}</span>
+            <p className="text-[11px] font-black text-kidia-orange uppercase tracking-[0.2em] leading-none mb-1.5">Nível 5</p>
+            <p className="text-base font-black text-kidia-green-dark">{profile.name || 'Utilizador'}</p>
           </div>
         </div>
       </div>
 
       {/* Primary Action: QR/Camera Scanner */}
-      <button 
-        onClick={onTriggerScan}
-        className="w-full bg-kidia-green-primary rounded-[2.5rem] p-6 mb-8 flex items-center justify-between shadow-premium active:scale-[0.98] transition-all group relative overflow-hidden"
-      >
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-        <div className="flex items-center gap-5 relative z-10">
-          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform">
-            <Camera size={32} className="text-kidia-green-primary" strokeWidth={2.5} />
-          </div>
-          <div className="text-left">
-            <h3 className="text-white font-black text-xl tracking-tight">Analisar Prato</h3>
-            <p className="text-white/60 text-[11px] font-black uppercase tracking-widest mt-1">Scan de IA do Dr. Viva</p>
-          </div>
-        </div>
-        <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center relative z-10 border border-white/20">
-          <Plus size={24} className="text-white" />
-        </div>
-      </button>
-
-      {/* Bento Stats Grid */}
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        {/* Main Health Score */}
-        <div className="col-span-2 bg-white/60 backdrop-blur-md rounded-[2.5rem] p-8 shadow-soft border border-white flex flex-col items-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-kidia-green-primary/5 rounded-full -mr-10 -mt-10 blur-3xl"></div>
-          
-          <div className="relative w-44 h-44 flex items-center justify-center mb-4">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" stroke="#F1F5F9" strokeWidth="10" fill="transparent" />
-              <circle 
-                cx="50" cy="50" r="42" 
-                stroke="#2D6A4F" 
-                strokeWidth="10" 
-                fill="transparent" 
-                strokeDasharray="264" 
-                strokeDashoffset="66" 
-                strokeLinecap="round" 
-                className="transition-all duration-1000 ease-out" 
-              />
-            </svg>
-            <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-5xl font-black text-kidia-green-dark tracking-tighter">75</span>
-              <span className="text-[10px] font-black text-kidia-grey-text tracking-[0.2em] uppercase">Saúde</span>
+      <div className="relative mb-8 group">
+        <div className="absolute -inset-1 bg-gradient-to-r from-kidia-green-primary to-kidia-orange rounded-[3rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+        <button 
+          onClick={onTriggerScan}
+          className="relative w-full bg-kidia-green-primary rounded-[2.8rem] p-7 flex items-center justify-between shadow-premium active:scale-[0.98] transition-all overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+          <div className="flex items-center gap-6 relative z-10">
+            <div className="w-18 h-18 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
+              <Camera size={36} className="text-white" strokeWidth={2.5} />
+            </div>
+            <div className="text-left">
+              <h3 className="text-white font-black text-2xl tracking-tight">Analisar Refeição</h3>
+              <p className="text-white/60 text-[12px] font-bold uppercase tracking-widest mt-1">IA da Kdia</p>
             </div>
           </div>
-          
-          <div className="text-center">
-            <span className="bg-kidia-green-primary/10 text-kidia-green-primary text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-3 inline-block">Ótimo Progresso</span>
-            <p className="text-kidia-grey-text text-sm font-medium leading-relaxed">
-              Sua saúde está <span className="text-kidia-green-primary font-bold">15% melhor</span> que ontem.
-            </p>
+          <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center relative z-10 border border-white/30">
+            <Plus size={24} className="text-white" />
+          </div>
+        </button>
+      </div>
+
+      {/* Last Scan Result - NEW SECTION */}
+      {lastScan && (
+        <div className="mb-8">
+          <h2 className="text-[11px] font-black text-kidia-green-primary uppercase tracking-[0.2em] mb-4 ml-2">Última Análise</h2>
+          <div className="bg-white rounded-[2.5rem] p-6 shadow-soft border border-white flex items-center gap-5">
+            <div className="w-16 h-16 bg-kidia-green-primary/5 rounded-2xl flex flex-col items-center justify-center text-kidia-green-primary">
+              <span className="text-xl font-black leading-none">{lastScan.calories.split(' ')[0]}</span>
+              <span className="text-[9px] font-bold uppercase">kcal</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-black text-kidia-green-dark text-lg leading-tight mb-1">{lastScan.itemName}</h3>
+              <div className="flex gap-3 text-[11px] font-bold text-kidia-grey-text">
+                <span>Carbos: <span className="text-kidia-green-primary">{lastScan.carbs}</span></span>
+                <span>Sódio: <span className="text-blue-500">{lastScan.sodium}</span></span>
+              </div>
+            </div>
+            <ChevronRight size={20} className="text-gray-300" />
           </div>
         </div>
+      )}
 
-        {/* Small Stats */}
-        <div className="bg-white/60 backdrop-blur-md rounded-[2rem] p-6 flex flex-col justify-between shadow-soft border border-white">
-          <div className="w-12 h-12 rounded-2xl bg-kidia-orange/10 flex items-center justify-center mb-4">
-            <Flame className="text-kidia-orange" size={24} fill="currentColor" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-kidia-grey-text uppercase tracking-widest mb-1">Ofensiva</p>
-            <p className="text-2xl font-black text-kidia-green-dark">5 Dias</p>
-          </div>
-        </div>
-
-        <div className="bg-white/60 backdrop-blur-md rounded-[2rem] p-6 flex flex-col justify-between shadow-soft border border-white">
-          <div className="w-12 h-12 rounded-2xl bg-kidia-green-primary/10 flex items-center justify-center mb-4">
-            <Star className="text-kidia-green-primary" size={24} fill="currentColor" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-kidia-grey-text uppercase tracking-widest mb-1">Pontos</p>
-            <p className="text-2xl font-black text-kidia-green-dark">1,250</p>
-          </div>
+      {/* Recommendations Slider - NEW SECTION */}
+      <div className="mb-10">
+        <h2 className="text-[11px] font-black text-kidia-green-primary uppercase tracking-[0.2em] mb-4 ml-2">Recomendações para Si</h2>
+        <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide px-2">
+          {recommendations.map((rec, i) => (
+            <div 
+              key={i} 
+              className="min-w-[260px] bg-white rounded-[2.5rem] p-6 shadow-premium border border-white flex flex-col gap-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className={`w-12 h-12 rounded-2xl ${rec.bg} flex items-center justify-center ${rec.color}`}>
+                  <rec.icon size={24} />
+                </div>
+                <span className="text-[10px] font-black px-3 py-1 bg-gray-50 rounded-full text-gray-400 uppercase tracking-widest">{rec.type}</span>
+              </div>
+              <div>
+                <h3 className="font-black text-kidia-green-dark text-lg mb-1 leading-tight">{rec.title}</h3>
+                <p className="text-[13px] font-medium text-kidia-grey-text leading-snug">{rec.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Dica do Dia - Refined Style */}
-      <div className="bg-kidia-green-primary rounded-[2rem] p-6 mb-8 relative overflow-hidden shadow-premium">
+      <div className="bg-kidia-green-primary rounded-[2rem] p-6 mb-10 relative overflow-hidden shadow-premium">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
         <div className="flex flex-col items-center gap-4 relative z-10 text-center">
           <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-md border border-white/20">
             <Zap className="text-kidia-accent-yellow" size={24} fill="currentColor" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-kidia-accent-yellow uppercase tracking-widest block mb-1">Insight do Dr. Viva</span>
-            <p className="text-white text-sm leading-relaxed font-medium">
+            <span className="text-[10px] font-bold text-kidia-accent-yellow uppercase tracking-widest block mb-1">Insight Vital da Kdia</span>
+            <p className="text-white text-sm leading-relaxed font-bold">
               "Beber um copo de água morna com limão em jejum ajuda a preparar o estômago para a digestão do dia."
             </p>
           </div>

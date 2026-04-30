@@ -11,7 +11,8 @@ import { PremiumView } from './views/PremiumView';
 import { LoginView } from './views/LoginView';
 import { SignupView } from './views/SignupView';
 import { ChatView } from './views/ChatView';
-import { Home, User, Plus, Calendar, BarChart2, MessageCircle } from './components/Icons';
+import { SettingsView } from './views/SettingsView';
+import { Home, User, Plus, Calendar, BarChart2, MessageCircle, Settings } from './components/Icons';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,6 +24,9 @@ function App() {
     diabetes: false,
     hypertension: false,
     weightLoss: false,
+    weeklyGoal: 'control',
+    currentWeight: 75,
+    targetWeight: 70
   });
   
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
@@ -163,9 +167,18 @@ function App() {
         <div className="flex-1 flex flex-col min-h-0 relative">
           {currentView === 'dashboard' && <HomeView onTriggerScan={triggerScanner} profile={profile} />}
           {currentView === 'mealplan' && <MealPlanView />}
-          {currentView === 'history' && <HistoryView />}
+          {currentView === 'history' && <HistoryView profile={profile} onUpdateProfile={handleUpdateProfile} />}
           {currentView === 'chat' && <ChatView profile={profile} onBack={() => setCurrentView('dashboard')} />}
-          {currentView === 'profile' && <ProfileView profile={profile} onUpdateProfile={handleUpdateProfile} onGoPremium={() => setCurrentView('premium')} onLogout={handleLogout} />}
+          {currentView === 'settings' && <SettingsView profile={profile} onBack={() => setCurrentView('profile')} onLogout={handleLogout} />}
+          {currentView === 'profile' && (
+            <ProfileView 
+              profile={profile} 
+              onUpdateProfile={handleUpdateProfile} 
+              onGoPremium={() => setCurrentView('premium')} 
+              onLogout={handleLogout}
+              onGoSettings={() => setCurrentView('settings')}
+            />
+          )}
           {currentView === 'scanning' && <ScanningView imagePreview={imagePreview} />}
           {currentView === 'premium' && <PremiumView onBack={() => setCurrentView('profile')} />}
           {currentView === 'results' && scanResult && (
